@@ -1,6 +1,6 @@
 /* 
     IS50B_FA23 Project:
-    Bill Kerney
+    William Kerney
     //YOU: Add your name here
 */
 
