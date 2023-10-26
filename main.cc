@@ -1,5 +1,10 @@
+/* 
+    IS50B_FA23 Project:
+    Bill Kerney
+    //YOU: Add your name here
+*/
 
-
+//Template Code:
 /*******************************************************************************************
 *
 *   raylib [core] example - 3d camera first person
@@ -13,6 +18,7 @@
 *
 ********************************************************************************************/
 
+//F6 to compile and run it in Notepad++
 #include "raylib.h"
 #include "rcamera.h"
 
@@ -207,4 +213,3 @@ int main(void)
     return 0;
 }
 
-raylib example source code
