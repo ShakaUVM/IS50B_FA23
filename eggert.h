@@ -4,6 +4,8 @@
 void eggert(bool enabled) {
     float size = 32.0;
     
+
+    
     // Define Origin
     Vector3 origin = (Vector3){ 0.0f, 0.0f, -size };
     

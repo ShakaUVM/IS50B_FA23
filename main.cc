@@ -23,8 +23,15 @@ int main(void)
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
+    
+
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
+    
+    // Initialize audio device, so you can play sounds - Meg
+    InitAudioDevice();
+    // This is a cool laser sound
+    Sound laser = LoadSound("laser.wav");
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
@@ -56,6 +63,11 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
+        // Press 'k' to play a laser sound
+        if (IsKeyPressed(KEY_K))
+        {
+            PlaySound(laser);
+        }
         /*
         // Update
         //----------------------------------------------------------------------------------
@@ -223,6 +235,8 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     CloseWindow();        // Close window and OpenGL context
+    CloseAudioDevice();
+    UnloadSound(laser);
     //--------------------------------------------------------------------------------------
 
     return 0;
