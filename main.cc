@@ -141,7 +141,7 @@ int main(void)
 
         // Draw
         //----------------------------------------------------------------------------------
-        bool xiong_enabled = false;
+        bool xiong_enabled = true;
         bool eggert_enabled = true;
         bool voss_enabled = false;
         const bool kerney_enabled = true;
