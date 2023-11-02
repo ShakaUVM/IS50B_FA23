@@ -4,13 +4,10 @@
 void eggert(bool enabled) {
     float size = 32.0;
     
-
-    
     // Define Origin
     Vector3 origin = (Vector3){ 0.0f, 0.0f, -size };
     
     // Draw Origin
-    //DrawCircle3D(origin, 1.0f, (Vector3){255, 0.0f, 0.0f}, PI / 4.0f, PINK);
     DrawCylinder(origin, 2.3, 1.8
     , 0.2, 20, PINK);
         
@@ -37,5 +34,9 @@ void eggert(bool enabled) {
     float maxPos_Z = 10.0f;
     float minPos_Z = 0.0f;
     
+    // Space Bits
+    Model space1 = LoadModel("spaceBits\\Assets\\obj\\solarpanel.obj");
+    Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    Vector3 space1_pos = {0.0f, 0.1f, -(size + size/2.0 - 5.0)};
                 
 }
