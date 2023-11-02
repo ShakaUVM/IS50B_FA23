@@ -2,7 +2,8 @@
 #define MAIN_H
 //Common header file
 #include "raylib.h"
-#include "rcamera.h"
+#include "rcameracopy.h"
+#include "shapes.h"
 
 #include "xiong.h"
 #include "voss.h"
