@@ -142,7 +142,7 @@ int main(void)
         // Draw
         //----------------------------------------------------------------------------------
         bool xiong_enabled = false;
-        bool eggert_enabled = false;
+        bool eggert_enabled = true;
         bool voss_enabled = false;
         const bool kerney_enabled = true;
         bool raymond_enabled = false;
@@ -169,7 +169,7 @@ int main(void)
                 /*
                 DrawCube((Vector3){ -16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, BLUE);     // Draw a blue wall
                 DrawCube((Vector3){ 16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, LIME);      // Draw a green wall
-                DrawCube((Vector3){ 0.0f, 2.5f, 16.0f }, 32.0f, 5.0f, 1.0f, GOLD);      // Draw a yellow wall
+           `     DrawCube((Vector3){ 0.0f, 2.5f, 16.0f }, 32.0f, 5.0f, 1.0f, GOLD);      // Draw a yellow wall
                 */
 
                 // Draw some cubes around
