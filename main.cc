@@ -32,7 +32,9 @@ int main(void)
     InitAudioDevice();
     // This is a cool laser sound
     Sound laser = LoadSound("laser.wav");
-
+    Music bgMusic = LoadMusicStream("Space Music2.mp3");
+    PlayMusicStream(bgMusic); // Play Background Music
+    
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = { 0 };
     camera.position = (Vector3){ 0.0f, 2.0f, 4.0f };    // Camera position
@@ -63,6 +65,8 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
+        UpdateMusicStream(bgMusic);
+        
         // Press 'k' to play a laser sound
         if (IsKeyPressed(KEY_K))
         {
@@ -237,6 +241,7 @@ int main(void)
     CloseWindow();        // Close window and OpenGL context
     CloseAudioDevice();
     UnloadSound(laser);
+    UnloadMusicStream(bgMusic);
     //--------------------------------------------------------------------------------------
 
     return 0;
