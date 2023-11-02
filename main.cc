@@ -26,6 +26,16 @@ int main(void)
     const int screenHeight = 450;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
+    
+    //Load Models - Meg
+    // Space Bits
+    Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
+    Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    Vector3 space1_pos = {0.0f, 0.1f, 0.0f};
+    //space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
+    //BoundingBox space1_bBox = GetMeshBoundingBox(space1.meshes[0]);
+    
+
 
     // Initialize audio device, so you can play sounds - Meg
     InitAudioDevice();
@@ -33,6 +43,7 @@ int main(void)
     Sound laser = LoadSound("laser.wav");
     Music bgMusic = LoadMusicStream("Space Music2.mp3");
     PlayMusicStream(bgMusic); // Play Background Music
+    
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = {0};
@@ -180,6 +191,9 @@ int main(void)
         kerney(kerney_enabled);
         raymond(raymond_enabled);
 
+        //Draw Space Bits
+        DrawModel(space1, space1_pos, 1.0f, WHITE);
+        
         DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD); // Draw ground
         /*
         DrawCube((Vector3){ -16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, BLUE);     // Draw a blue wall
@@ -239,8 +253,13 @@ int main(void)
     //--------------------------------------------------------------------------------------
     CloseWindow(); // Close window and OpenGL context
     CloseAudioDevice();
+    
+    //Unload Sounds - Meg
     UnloadSound(laser);
     UnloadMusicStream(bgMusic);
+    // Unload Models/Textures - Meg
+    UnloadModel(space1);
+    UnloadTexture(space1_tex);
     //--------------------------------------------------------------------------------------
 
     return 0;
