@@ -1,9 +1,12 @@
 #ifndef MAIN_H
 #define MAIN_H
 //Common header file
+#include <iostream>
+#include <vector>
 #include "raylib.h"
 #include "rcameracopy.h"
 #include "shapes.h"
+using namespace std;
 
 #include "xiong.h"
 #include "voss.h"
