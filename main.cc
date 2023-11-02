@@ -4,8 +4,7 @@
     William Kerney
     Sean Raymond
     Meagan Eggert
-    Ro
-     bert Voss
+    Robert Voss
     Bruce Xiong
 */
 
@@ -18,15 +17,17 @@
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 3840;
+    const int screenHeight = 2160;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
-    
+    SetWindowMonitor(GetMonitorCount() == 3 ? 2 : 0);
+    //SetWindowSize(GetMonitorWidth(2),GetMonitorHeight(2));
+        
     // Load Models - Meg
     // Space Bits
     Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
