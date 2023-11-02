@@ -29,10 +29,11 @@ int main()
     //SetWindowSize(GetMonitorWidth(2),GetMonitorHeight(2));
         
     // Load Models - Meg
+    
     // Space Bits
     Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
     Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
-    Vector3 space1_pos = {0.0f, 0.1f, -3.0f};
+    Vector3 space1_pos = {0.0f, 0.1f, -4.0f};
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
     BoundingBox space1_bBox = GetMeshBoundingBox(space1.meshes[0]);
     
@@ -226,7 +227,7 @@ int main()
         // Draw info boxes
         DrawRectangle(5, 5, 330, 100, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines(5, 5, 330, 100, BLUE);
-
+        
         DrawText("Camera controls:", 15, 15, 10, BLACK);
         DrawText("- Move keys: W, A, S, D, Space, Left-Ctrl", 15, 30, 10, BLACK);
         DrawText("- Look around: arrow keys or mouse", 15, 45, 10, BLACK);

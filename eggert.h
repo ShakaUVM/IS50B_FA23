@@ -2,10 +2,10 @@
 #include "raylib.h"
 
 void eggert(bool enabled) {
-    float size = 32.0;
+    double size = 32.0;
     
     // Define Origin
-    Vector3 origin = (Vector3){ 0.0f, 0.0f, -size };
+    Vector3 origin = (Vector3){ 0.0, 0.0, -size };
     
     // Draw Origin
     DrawCylinder(origin, 2.3, 1.8
@@ -15,11 +15,11 @@ void eggert(bool enabled) {
     DrawPlane(origin, (Vector2){ size, size }, BLACK);
     
     // All Walls
-    float wallHeight = 10.0f;
-    float wallThickness = 2.0f;
+    double wallHeight = 10.0;
+    double wallThickness = 2.0;
     
     // South Wall
-    Vector3 southWall_orig = (Vector3){0.0f, wallHeight / 2.0, -(size + size / 2.0)};
+    Vector3 southWall_orig = (Vector3){0.0, wallHeight / 2.0, -(size + size / 2.0)};
     // West Wall
     Vector3 eastWall_orig = (Vector3){-size + size / 2.0, wallHeight / 2.0, -size};
     // East Wall
