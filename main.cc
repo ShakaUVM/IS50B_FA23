@@ -178,6 +178,11 @@ int main()
         ClearBackground(RAYWHITE);
 
         // TODO:
+        // Raymond will implement collision
+        // Voss will implement a puzzle
+        // Meg will git lfs migrate
+        // Bruce will do a skybox
+        // git lfs migrate
         // Add in a skybox
         // Add in models for the spaceship
         // Add in monsters
@@ -266,6 +271,4 @@ int main()
     UnloadModel(space1);
     UnloadTexture(space1_tex);
     //--------------------------------------------------------------------------------------
-
-    return 0;
 }
