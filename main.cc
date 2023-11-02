@@ -28,19 +28,14 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     
     // Load Models - Meg
-    // Rogue
-    Model rogue = LoadModel("adventurers\\Characters\\gltf\\rogue.glb");
-    Texture2D rogue_tex = LoadTexture("adventurers\Characters\gltf\rogue_texture.png");
-    Vector3 rogue_pos = {0.0f, 0.0f, 0.0f};
-    rogue.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = rogue_tex;
-    
     // Space Bits
     Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
     Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
     Vector3 space1_pos = {0.0f, 0.1f, -3.0f};
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
     BoundingBox space1_bBox = GetMeshBoundingBox(space1.meshes[0]);
-
+    
+    
     // Initialize audio device, so you can play sounds - Meg
     InitAudioDevice();
     // This is a cool laser sound
@@ -194,9 +189,6 @@ int main(void)
         voss(voss_enabled);
         kerney(kerney_enabled);
         raymond(raymond_enabled);
-
-        // Draw Rogue
-        DrawModel(rogue, rogue_pos, 1.0f, WHITE);
         
         // Draw Space Bits
         DrawModel(space1, space1_pos, 1.0f, WHITE);
@@ -208,13 +200,17 @@ int main(void)
    `     DrawCube((Vector3){ 0.0f, 2.5f, 16.0f }, 32.0f, 5.0f, 1.0f, GOLD);      // Draw a yellow wall
         */
 
+
         // Draw some cubes around
+        /*
         for (int i = 0; i < MAX_COLUMNS; i++)
         {
             DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
             DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
         }
-
+        */
+        
+        
         /*
         // Draw player cube
         if (cameraMode == CAMERA_THIRD_PERSON)
@@ -267,9 +263,6 @@ int main(void)
     // Unload Models/Textures - Meg
     UnloadModel(space1);
     UnloadTexture(space1_tex);
-    
-    UnloadModel(rogue);
-    UnloadTexture(rogue_tex);
     //--------------------------------------------------------------------------------------
 
     return 0;
