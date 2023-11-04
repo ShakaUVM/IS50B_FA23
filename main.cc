@@ -37,6 +37,11 @@ int main()
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
     BoundingBox space1_bBox = GetMeshBoundingBox(space1.meshes[0]);
     
+    // Barbarian (For Testing)
+    Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
+    Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
+    Vector3 barbarian_pos = {0.0, 0.1, -10.0};
+  
     
     // Initialize audio device, so you can play sounds - Meg
     InitAudioDevice();
@@ -199,6 +204,11 @@ int main()
         
         // Draw Space Bits
         DrawModel(space1, space1_pos, 1.0f, WHITE);
+
+                
+        // Draw Barbarian
+        DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
+        
         
         DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD); // Draw ground
         /*
@@ -270,5 +280,7 @@ int main()
     // Unload Models/Textures - Meg
     UnloadModel(space1);
     UnloadTexture(space1_tex);
+    UnloadModel(barbarian);
+    UnloadTexture(barbarian_tex);
     //--------------------------------------------------------------------------------------
 }
