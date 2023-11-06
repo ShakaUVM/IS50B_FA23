@@ -28,20 +28,41 @@ int main()
     SetWindowMonitor(GetMonitorCount() == 3 ? 2 : 0);
     //SetWindowSize(GetMonitorWidth(2),GetMonitorHeight(2));
         
-    // Load Models - Meg
+    // BEGIN MODEL LOADING - MEG
     
-    // Space Bits
+    // SPACE BITS
+    // Space Model 1 (space1)
+    float space1_scale = 0.5;
     Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
     Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
     Vector3 space1_pos = {0.0f, 0.1f, -4.0f};
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
-    BoundingBox space1_bBox = GetMeshBoundingBox(space1.meshes[0]);
+    // Find the edges of the model
+    BoundingBox space1_bounds = GetMeshBoundingBox(space1.meshes[0]);
+    // Calculate size of the model
+    Vector3 space1_size = (Vector3){space1_scale * (space1_bounds.max.x - space1_bounds.min.x), space1_scale * (space1_bounds.max.y - space1_bounds.min.y), space1_scale * (space1_bounds.max.z - space1_bounds.min.z)};
+    // Create bounding box based on the size and position of the model
+    BoundingBox space1_bBox = (BoundingBox){(Vector3){ space1_pos.x - space1_size.x/2, space1_pos.y - space1_size.y/2, space1_pos.z - space1_size.z/2 }, (Vector3){ space1_pos.x + space1_size.x/2, space1_pos.y + space1_size.y, space1_pos.z + space1_size.z/2 }};
+    
+    // Space Model 2 (space2)
+    float space2_scale = 0.75;
+    Model space2 = LoadModel("spaceBits\\Assets\\obj\\basemodule_C.obj");
+    Texture2D space2_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    Vector3 space2_pos = {4.5f, 0.1f, -6.0f};
+    space2.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
+    // Find the edges of the model
+    BoundingBox space2_bounds = GetMeshBoundingBox(space2.meshes[0]);
+    // Calculate size of the model
+    Vector3 space2_size = (Vector3){space2_scale * (space2_bounds.max.x - space2_bounds.min.x), space2_scale * (space2_bounds.max.y - space2_bounds.min.y), space2_scale * (space2_bounds.max.z - space2_bounds.min.z)};
+    // Create bounding box based on the size and position of the model
+    BoundingBox space2_bBox = (BoundingBox){(Vector3){ space2_pos.x - space2_size.x/2, space2_pos.y - space2_size.y/2, space2_pos.z - space2_size.z/2 }, (Vector3){ space2_pos.x + space2_size.x/2, space2_pos.y + space2_size.y, space2_pos.z + space2_size.z/2 }};
     
     // Barbarian (For Testing)
     Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
     Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
     Vector3 barbarian_pos = {0.0, 0.1, -10.0};
   
+    // END MODEL LOADING
     
     // Initialize audio device, so you can play sounds - Meg
     InitAudioDevice();
@@ -203,11 +224,14 @@ int main()
         raymond(raymond_enabled);
         
         // Draw Space Bits
-        DrawModel(space1, space1_pos, 1.0f, WHITE);
+        DrawModel(space1, space1_pos, space1_scale, WHITE);
+        DrawBoundingBox(space1_bBox, PINK);
+        DrawModel(space2, space2_pos, space2_scale, WHITE);
+        DrawBoundingBox(space2_bBox, DARKGREEN);
 
                 
         // Draw Barbarian
-        DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
+        //DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
         
         
         DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD); // Draw ground
@@ -240,16 +264,19 @@ int main()
         EndMode3D();
 
         // Draw info boxes
-        DrawRectangle(5, 5, 330, 100, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines(5, 5, 330, 100, BLUE);
+        DrawRectangle(5, 5, 330, 100, Fade(BLUE, 0.5f));
+        DrawRectangleLines(5, 5, 330, 100, BLACK);
+        DrawText("Press 'K' to Laser", 15, 30, 10, WHITE);
         
+        
+        /*
         DrawText("Camera controls:", 15, 15, 10, BLACK);
         DrawText("- Move keys: W, A, S, D, Space, Left-Ctrl", 15, 30, 10, BLACK);
         DrawText("- Look around: arrow keys or mouse", 15, 45, 10, BLACK);
         DrawText("- Camera mode keys: 1, 2, 3, 4", 15, 60, 10, BLACK);
         DrawText("- Zoom keys: num-plus, num-minus or mouse scroll", 15, 75, 10, BLACK);
         DrawText("- Camera projection key: P", 15, 90, 10, BLACK);
-
+        */
         /*
                     DrawRectangle(600, 5, 195, 100, Fade(SKYBLUE, 0.5f));
                     DrawRectangleLines(600, 5, 195, 100, BLUE);
@@ -280,6 +307,8 @@ int main()
     // Unload Models/Textures - Meg
     UnloadModel(space1);
     UnloadTexture(space1_tex);
+    UnloadModel(space2);
+    UnloadTexture(space2_tex);
     UnloadModel(barbarian);
     UnloadTexture(barbarian_tex);
     //--------------------------------------------------------------------------------------
