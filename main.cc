@@ -25,6 +25,10 @@ int main()
     const int screenWidth = 3840;
     const int screenHeight = 2160;
 
+    vector<Cube> cubes;
+    vector<Sphere> spheres;
+    vector<Plane> planes;
+
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     int MONITOR = GetMonitorCount() == 3 ? 2 : 0;
 
@@ -212,6 +216,26 @@ int main()
         // For advance camera controls, it's reecommended to compute camera movement manually
         UpdateCamera(&camera, cameraMode); // Update camera
 
+
+        // Delta movement
+        Vector3 proposedMove = (Vector3){0,0,0};
+        // I'll figure this out later
+        Vector3 rotation = (Vector3){0,0,0};
+        
+        const int MOVESPEED = 1;
+        
+        CheckCollisions(&camera, proposedMove, cubes, spheres, planes);
+
+        
+        // if(IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { proposedMove.y += MOVESPEED;}
+        // if(IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) { proposedMove.x -= MOVESPEED;}
+        // if(IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) { proposedMove.y -= MOVESPEED;}
+        // if(IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {proposedMove.x += MOVESPEED;}
+
+        
+        // ignore the 1, zoom is disabled
+        //UpdateCameraPro(&camera, proposedMove, rotation, 1);
+
         /*
                 // Camera PRO usage example (EXPERIMENTAL)
                 // This new camera function allows custom movement/rotation values to be directly provided
@@ -239,7 +263,7 @@ int main()
         bool eggert_enabled = true;
         bool voss_enabled = true; // voss
         const bool kerney_enabled = true;
-        bool raymond_enabled = false;
+        bool raymond_enabled = true;
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
@@ -262,7 +286,20 @@ int main()
         eggert(eggert_enabled);
         voss(voss_enabled);
         kerney(kerney_enabled);
-        raymond(raymond_enabled);
+        raymond(raymond_enabled, cubes, spheres, planes);
+        
+        for(Cube& c : cubes) {
+            c.Draw();
+        }
+        
+        for(Sphere& s : spheres) {
+            s.Draw();
+        }
+        
+        for(Plane& p : planes) {
+            p.Draw();
+        }
+        
 
         // Draw Space Bits
         DrawModel(space1, space1_pos, space1_scale, WHITE);

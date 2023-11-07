@@ -424,6 +424,8 @@ Matrix GetCameraProjectionMatrix(Camera *camera, float aspect)
 void UpdateCamera(Camera *camera, int mode)
 {
     Vector2 mousePositionDelta = GetMouseDelta();
+    
+    Vector3 proposedMove = camera->position;
 
     bool moveInWorldPlane = ((mode == CAMERA_FIRST_PERSON) || (mode == CAMERA_THIRD_PERSON));
     bool rotateAroundTarget = ((mode == CAMERA_THIRD_PERSON) || (mode == CAMERA_ORBITAL));
@@ -452,10 +454,23 @@ void UpdateCamera(Camera *camera, int mode)
         CameraPitch(camera, -mousePositionDelta.y*CAMERA_MOUSE_MOVE_SENSITIVITY, lockView, rotateAroundTarget, rotateUp);
 
         // Camera movement
-        if (IsKeyDown(KEY_W)) CameraMoveForward(camera, CAMERA_MOVE_SPEED, moveInWorldPlane);
-        if (IsKeyDown(KEY_A)) CameraMoveRight(camera, -CAMERA_MOVE_SPEED, moveInWorldPlane);
-        if (IsKeyDown(KEY_S)) CameraMoveForward(camera, -CAMERA_MOVE_SPEED, moveInWorldPlane);
-        if (IsKeyDown(KEY_D)) CameraMoveRight(camera, CAMERA_MOVE_SPEED, moveInWorldPlane);
+        // if (IsKeyDown(KEY_W)) CameraMoveForward(camera, CAMERA_MOVE_SPEED, moveInWorldPlane);
+        // if (IsKeyDown(KEY_A)) CameraMoveRight(camera, -CAMERA_MOVE_SPEED, moveInWorldPlane);
+        // if (IsKeyDown(KEY_S)) CameraMoveForward(camera, -CAMERA_MOVE_SPEED, moveInWorldPlane);
+        // if (IsKeyDown(KEY_D)) CameraMoveRight(camera, CAMERA_MOVE_SPEED, moveInWorldPlane);
+        
+        const int MOVESPEED = 1;
+        
+        if (IsKeyDown(KEY_W)) proposedMove.z += MOVESPEED;
+        if (IsKeyDown(KEY_A)) proposedMove.x += MOVESPEED;
+        if (IsKeyDown(KEY_S)) proposedMove.z -= MOVESPEED;
+        if (IsKeyDown(KEY_D)) proposedMove.x += MOVESPEED;
+        
+        
+        
+        CameraMoveForward(camera, proposedMove.z - camera->position.z, moveInWorldPlane);
+        CameraMoveRight(camera, proposedMove.x - camera->position.x, moveInWorldPlane);
+        
         //if (IsKeyDown(KEY_SPACE)) CameraMoveUp(camera, CAMERA_MOVE_SPEED);
         //if (IsKeyDown(KEY_LEFT_CONTROL)) CameraMoveUp(camera, -CAMERA_MOVE_SPEED);
     }
@@ -469,14 +484,10 @@ void UpdateCamera(Camera *camera, int mode)
     }
 }
 
-void CheckCollissions(Camera*camera, Vector3 movement, Vector3 rotation) {
-    
-}
-
 #endif // !CAMERA_STANDALONE
 
 // Update camera movement, movement/rotation values should be provided by user
-void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float zoom)
+void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation)
 {
     // Required values
     // movement.x - Move forward/backward
@@ -496,8 +507,7 @@ void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float z
     CameraPitch(camera, -rotation.y*DEG2RAD, lockView, rotateAroundTarget, rotateUp);
     CameraYaw(camera, -rotation.x*DEG2RAD, rotateAroundTarget);
     CameraRoll(camera, rotation.z*DEG2RAD);
-    
-    
+   
 
     // Camera movement
     CameraMoveForward(camera, movement.x, moveInWorldPlane);
@@ -505,7 +515,7 @@ void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float z
     CameraMoveUp(camera, movement.z);
 
     // Zoom target distance
-    CameraMoveToTarget(camera, zoom);
+    //CameraMoveToTarget(camera, zoom);
 }
 
 #endif // CAMERA_IMPLEMENTATION
