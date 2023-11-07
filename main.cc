@@ -26,15 +26,50 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     SetWindowMonitor(GetMonitorCount() == 3 ? 2 : 0);
-    //SetWindowSize(GetMonitorWidth(2),GetMonitorHeight(2));
-        
+    // SetWindowSize(GetMonitorWidth(2),GetMonitorHeight(2));
+
     // BEGIN MODEL LOADING - MEG
-    
+
+    // Improved Model Loading?? - Voss
+    const string MODEL_OBJ_PATH = "spaceBits\\Assets\\obj\\";
+    const string MODEL_TEXTURE_PATH = "spaceBits\\Assets\\textures\\";
+    const string CHARACTER_PATH = "adventurers\\Characters\\gltf\\";
+
+    vector<string> model_names = {"basemodule_A.obj", "basemodule_C.obj"};
+    vector<string> character_names = {"barbarian.glb"};
+    vector<Model> models;
+
+    for (int i = 0; i < model_names.size(); i++) // Add objects to models vector
+    {
+        models.push_back(LoadModel((MODEL_OBJ_PATH + model_names[i]).c_str()));
+    }
+
+    for (int i = 0; i < character_names.size(); i++) // Add characters to models vector
+    {
+        models.push_back(LoadModel((CHARACTER_PATH + character_names[i]).c_str()));
+    }
+
+    vector<string> model_texture_names = {"spacebits_texture.png"};
+    vector<string> character_texture_names = {"barbarian_texture.png"};
+    vector<Texture2D> textures;
+
+    for (int i = 0; i < model_texture_names.size(); i++) // Add object textures to textures vector
+    {
+        textures.push_back(LoadTexture((MODEL_TEXTURE_PATH + model_texture_names[i]).c_str()));
+    }
+
+    for (int i = 0; i < character_texture_names.size(); i++) // Add character textures to textures vector
+    {
+        textures.push_back(LoadTexture((CHARACTER_PATH + character_texture_names[i]).c_str()));
+    }
+
     // SPACE BITS
     // Space Model 1 (space1)
     float space1_scale = 0.5;
-    Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
-    Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    // Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
+    Model space1 = models.at(0); // Voss
+    // Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    Texture2D space1_tex = textures.at(0); // Voss
     Vector3 space1_pos = {0.0f, 0.1f, -4.0f};
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
     // Find the edges of the model
@@ -42,12 +77,14 @@ int main()
     // Calculate size of the model
     Vector3 space1_size = (Vector3){space1_scale * (space1_bounds.max.x - space1_bounds.min.x), space1_scale * (space1_bounds.max.y - space1_bounds.min.y), space1_scale * (space1_bounds.max.z - space1_bounds.min.z)};
     // Create bounding box based on the size and position of the model
-    BoundingBox space1_bBox = (BoundingBox){(Vector3){ space1_pos.x - space1_size.x/2, space1_pos.y - space1_size.y/2, space1_pos.z - space1_size.z/2 }, (Vector3){ space1_pos.x + space1_size.x/2, space1_pos.y + space1_size.y, space1_pos.z + space1_size.z/2 }};
-    
+    BoundingBox space1_bBox = (BoundingBox){(Vector3){space1_pos.x - space1_size.x / 2, space1_pos.y - space1_size.y / 2, space1_pos.z - space1_size.z / 2}, (Vector3){space1_pos.x + space1_size.x / 2, space1_pos.y + space1_size.y, space1_pos.z + space1_size.z / 2}};
+
     // Space Model 2 (space2)
     float space2_scale = 0.75;
-    Model space2 = LoadModel("spaceBits\\Assets\\obj\\basemodule_C.obj");
-    Texture2D space2_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    // Model space2 = LoadModel("spaceBits\\Assets\\obj\\basemodule_C.obj");
+    Model space2 = models.at(1); // Voss
+    // Texture2D space2_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    Texture2D space2_tex = textures.at(0); // Voss
     Vector3 space2_pos = {4.5f, 0.1f, -6.0f};
     space2.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
     // Find the edges of the model
@@ -55,22 +92,23 @@ int main()
     // Calculate size of the model
     Vector3 space2_size = (Vector3){space2_scale * (space2_bounds.max.x - space2_bounds.min.x), space2_scale * (space2_bounds.max.y - space2_bounds.min.y), space2_scale * (space2_bounds.max.z - space2_bounds.min.z)};
     // Create bounding box based on the size and position of the model
-    BoundingBox space2_bBox = (BoundingBox){(Vector3){ space2_pos.x - space2_size.x/2, space2_pos.y - space2_size.y/2, space2_pos.z - space2_size.z/2 }, (Vector3){ space2_pos.x + space2_size.x/2, space2_pos.y + space2_size.y, space2_pos.z + space2_size.z/2 }};
-    
+    BoundingBox space2_bBox = (BoundingBox){(Vector3){space2_pos.x - space2_size.x / 2, space2_pos.y - space2_size.y / 2, space2_pos.z - space2_size.z / 2}, (Vector3){space2_pos.x + space2_size.x / 2, space2_pos.y + space2_size.y, space2_pos.z + space2_size.z / 2}};
+
     // Barbarian (For Testing)
-    Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
-    Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
+    // Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
+    Model barbarian = models.at(2); // Voss
+    // Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
+    Texture2D barbarian_tex = textures.at(1); // Voss
     Vector3 barbarian_pos = {0.0, 0.1, -10.0};
-  
+
     // END MODEL LOADING
-    
+
     // Initialize audio device, so you can play sounds - Meg
     InitAudioDevice();
     // This is a cool laser sound
     Sound laser = LoadSound("laser.wav");
     Music bgMusic = LoadMusicStream("Space Music2.mp3");
     PlayMusicStream(bgMusic); // Play Background Music
-    
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = {0};
@@ -222,25 +260,22 @@ int main()
         voss(voss_enabled);
         kerney(kerney_enabled);
         raymond(raymond_enabled);
-        
+
         // Draw Space Bits
         DrawModel(space1, space1_pos, space1_scale, WHITE);
         DrawBoundingBox(space1_bBox, PINK);
         DrawModel(space2, space2_pos, space2_scale, WHITE);
         DrawBoundingBox(space2_bBox, DARKGREEN);
 
-                
         // Draw Barbarian
-        //DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
-        
-        
+        // DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
+
         DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD); // Draw ground
         /*
         DrawCube((Vector3){ -16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, BLUE);     // Draw a blue wall
         DrawCube((Vector3){ 16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, LIME);      // Draw a green wall
    `     DrawCube((Vector3){ 0.0f, 2.5f, 16.0f }, 32.0f, 5.0f, 1.0f, GOLD);      // Draw a yellow wall
         */
-
 
         // Draw some cubes around
         /*
@@ -250,8 +285,7 @@ int main()
             DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
         }
         */
-        
-        
+
         /*
         // Draw player cube
         if (cameraMode == CAMERA_THIRD_PERSON)
@@ -267,8 +301,7 @@ int main()
         DrawRectangle(5, 5, 330, 100, Fade(BLUE, 0.5f));
         DrawRectangleLines(5, 5, 330, 100, BLACK);
         DrawText("Press 'K' to Laser", 15, 30, 10, WHITE);
-        
-        
+
         /*
         DrawText("Camera controls:", 15, 15, 10, BLACK);
         DrawText("- Move keys: W, A, S, D, Space, Left-Ctrl", 15, 30, 10, BLACK);
@@ -300,16 +333,26 @@ int main()
     //--------------------------------------------------------------------------------------
     CloseWindow(); // Close window and OpenGL context
     CloseAudioDevice();
-    
-    //Unload Sounds - Meg
+
+    // Unload Sounds - Meg
     UnloadSound(laser);
     UnloadMusicStream(bgMusic);
     // Unload Models/Textures - Meg
-    UnloadModel(space1);
-    UnloadTexture(space1_tex);
-    UnloadModel(space2);
-    UnloadTexture(space2_tex);
-    UnloadModel(barbarian);
-    UnloadTexture(barbarian_tex);
+    // UnloadModel(space1);
+    // UnloadTexture(space1_tex);
+    // UnloadModel(space2);
+    // UnloadTexture(space2_tex);
+    // UnloadModel(barbarian);
+    // UnloadTexture(barbarian_tex);
+    // Unload Models/Textures - Voss
+    for (int i = 0; i < models.size(); i++)
+    {
+        UnloadModel(models.at(i));
+    }
+
+    for (int i = 0; i < textures.size(); i++)
+    {
+        UnloadTexture(textures.at(i));
+    }
     //--------------------------------------------------------------------------------------
 }
