@@ -14,7 +14,7 @@
 
 
 
-#define MAX_COLUMNS 20
+const int MAX_COLUMNS = 20;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -58,13 +58,13 @@ int main()
     vector<Model> models;
 
     // Load in models for every name in model_names vector
-    for (int i = 0; i < model_names.size(); i++)
+    for (size_t i = 0; i < model_names.size(); i++)
     {
         models.push_back(LoadModel((MODEL_OBJ_PATH + model_names[i]).c_str()));
     }
 
     // Load in models for every character in character_names vector
-    for (int i = 0; i < character_names.size(); i++)
+    for (size_t i = 0; i < character_names.size(); i++)
     {
         models.push_back(LoadModel((CHARACTER_PATH + character_names[i]).c_str()));
     }
@@ -77,13 +77,13 @@ int main()
     vector<Texture2D> textures;
 
     // Load necessary textures for models
-    for (int i = 0; i < model_texture_names.size(); i++)
+    for (size_t i = 0; i < model_texture_names.size(); i++)
     {
         textures.push_back(LoadTexture((MODEL_TEXTURE_PATH + model_texture_names[i]).c_str()));
     }
 
     // Load necessary textures for characters
-    for (int i = 0; i < character_texture_names.size(); i++)
+    for (size_t i = 0; i < character_texture_names.size(); i++)
     {
         textures.push_back(LoadTexture((CHARACTER_PATH + character_texture_names[i]).c_str()));
     }
@@ -159,12 +159,14 @@ int main()
     Vector3 positions[MAX_COLUMNS] = {0};
     Color colors[MAX_COLUMNS] = {0};
 
+    /* Making a Random Map
     for (int i = 0; i < MAX_COLUMNS; i++)
     {
         heights[i] = (float)GetRandomValue(1, 12);
         positions[i] = (Vector3){(float)GetRandomValue(-15, 15), heights[i] / 2.0f, (float)GetRandomValue(-15, 15)};
         colors[i] = (Color){GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255};
     }
+    */
 
     DisableCursor(); // Limit cursor to relative movement inside the window
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
@@ -314,13 +316,13 @@ int main()
     UnloadMusicStream(bgMusic);
     
     // Unload All Models
-    for (int i = 0; i < models.size(); i++)
+    for (size_t i = 0; i < models.size(); i++)
     {
         UnloadModel(models.at(i));
     }
     
     // Unload All Textures
-    for (int i = 0; i < textures.size(); i++)
+    for (size_t i = 0; i < textures.size(); i++)
     {
         UnloadTexture(textures.at(i));
     }
