@@ -39,9 +39,13 @@ int main()
     Vector3 mainChar_center = mainChar_orig;
     float mainChar_speed = 0.25;
     bool hitSomething = false;
-    float heightBeforeJump = mainChar_center.y;
-    // END MAIN CHARACTER SET UP 
     
+    // Faux State Machine
+    bool onFloor = true;
+    bool onPlatform = false;
+    bool isJumping = false;
+    bool isFalling = false;
+    // END MAIN CHARACTER SET UP 
     
     // BEGIN PLATFORM SET UP - MEG
     // All Platforms
@@ -190,6 +194,7 @@ int main()
     {
         
         hitSomething = false;
+
         
         UpdateMusicStream(bgMusic);
         //rlTPCameraBeginMode3D(&orbitCam);
@@ -209,6 +214,7 @@ int main()
             }
         }
         if(IsKeyDown(KEY_A)) {
+            
             mainChar_center.x -= mainChar_speed;
             hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
             if (hitSomething){
@@ -300,24 +306,24 @@ int main()
 
         // Draw "character" sphere at the origin
         DrawSphere(mainChar_center, 0.25, MAROON);
-        DrawSphereWires(mainChar_center, mainChar_radius, 10, 20, BLACK);   
+        DrawSphereWires(mainChar_center, mainChar_radius, 10, 20, WHITE);   
 
         // Draw Space Bits
         DrawModel(space1, space1_pos, space1_scale, WHITE);
-        DrawBoundingBox(space1_bBox, PINK);
+        DrawBoundingBox(space1_bBox, WHITE);
         DrawModel(space2, space2_pos, space2_scale, WHITE);
-        DrawBoundingBox(space2_bBox, DARKGREEN);
+        DrawBoundingBox(space2_bBox, WHITE);
 
         // Draw Barbarian
         // DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
 
         // Draw Ground
-        DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD);
+        DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, BEIGE);
         
         // Draw Platforms
         DrawCube(platformOrigin, platformWidth, platformThickness, platformWidth, DARKGREEN);
         DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
-        DrawBoundingBox(platform_bBox, PINK);
+        DrawBoundingBox(platform_bBox, WHITE);
        
 
         // Draw some cubes around
