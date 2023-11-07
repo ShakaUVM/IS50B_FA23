@@ -204,6 +204,15 @@ int main()
         if(IsKeyDown(KEY_D)) {
             mainChar_center.x += mainChar_speed;
         }
+        // Jumping for Main Character
+        if(IsKeyPressed(KEY_SPACE)){
+            mainChar_center.y += 1.0;
+        }
+        if(IsKeyReleased(KEY_SPACE)){
+            while (mainChar_center.y > mainChar_radius){
+                mainChar_center.y -= (mainChar_speed / 10.0);
+            }
+        }
         
         // Check to see if the player runs into space1
         hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
