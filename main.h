@@ -7,6 +7,7 @@
 #include "rcameracopy.h"
 #include "shapes.h"
 #include "rlTPCamera.h"
+#include "raymath.h"
 using namespace std;
 
 #include "xiong.h"

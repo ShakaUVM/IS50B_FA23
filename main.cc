@@ -12,6 +12,8 @@
 
 #include "main.h"
 
+
+
 #define MAX_COLUMNS 20
 
 //------------------------------------------------------------------------------------
@@ -143,7 +145,15 @@ int main()
     camera.projection = CAMERA_PERSPECTIVE;        // Camera projection type
 
     int cameraMode = CAMERA_THIRD_PERSON;
-
+    
+    // stolen from a github repo. doesn't currently work
+    // setup initial camera data
+    /*
+    rlTPCamera orbitCam;
+    rlTPCameraInit(&orbitCam, 45, (Vector3){ 1, 0 ,0 });
+    orbitCam.ViewAngles.y = -15 * DEG2RAD;
+    */
+    
     // Generates some random columns
     float heights[MAX_COLUMNS] = {0};
     Vector3 positions[MAX_COLUMNS] = {0};
@@ -165,7 +175,10 @@ int main()
 // BEGIN MAIN LOOP 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
+        hitSomething = false;
+        
         UpdateMusicStream(bgMusic);
+        //rlTPCameraBeginMode3D(&orbitCam);
 
         // Press 'k' to play a laser sound
         if (IsKeyPressed(KEY_K))
@@ -176,6 +189,11 @@ int main()
         // WASD Control for the Main Character
         if(IsKeyDown(KEY_W)) {
             mainChar_center.z -= mainChar_speed;
+            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            if (hitSomething){
+                mainChar_center.z += mainChar_speed;
+            }
+                
         }
         if(IsKeyDown(KEY_A)) {
             mainChar_center.x -= mainChar_speed;
@@ -188,7 +206,8 @@ int main()
         }
         
         // Check to see if the player runs into space1
-        if (CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius)){
+        hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+        if (hitSomething){
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
         }
 
@@ -231,6 +250,11 @@ int main()
         voss(voss_enabled);
         kerney(kerney_enabled);
         raymond(raymond_enabled);
+        
+        
+        // target point
+        //DrawSphere(orbitCam.CameraPosition, 0.25f, RED);
+
 
         // Draw "character" sphere at the origin
         DrawSphere(mainChar_center, 0.25, MAROON);
@@ -259,6 +283,7 @@ int main()
         
             
         EndMode3D();
+        //rlTPCameraEndMode3D();
 
         // Draw info boxes (HUD)
         DrawRectangle(5, 5, 330, 100, Fade(BLUE, 0.5f));
