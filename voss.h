@@ -4,7 +4,7 @@
 
 void voss(bool enabled)
 {
-    float size = 32.0;
+    float size = 32.0f;
 
     // Define Origin
     Vector3 origin = (Vector3){-size, 0.0f, 0.0f};
@@ -20,11 +20,11 @@ void voss(bool enabled)
     float wallThickness = 2.0f;
 
     // North Wall
-    Vector3 northWall_orig = (Vector3){-size, wallHeight / 2.0, size - size / 2.0};
+    Vector3 northWall_orig = (Vector3){-size, wallHeight / 2.0f, size - size / 2.0f};
     // South Wall
-    Vector3 southWall_orig = (Vector3){-size, wallHeight / 2.0, -(size / 2.0)};
+    Vector3 southWall_orig = (Vector3){-size, wallHeight / 2.0f, -(size / 2.0f)};
     // East Wall
-    Vector3 eastWall_orig = (Vector3){-((size / 2.0) * 3), wallHeight / 2.0, 0.0};
+    Vector3 eastWall_orig = (Vector3){-((size / 2.0f) * 3), wallHeight / 2.0f, 0.0f};
 
     // Draw Walls
     DrawCube(northWall_orig, size, wallHeight, wallThickness, GRAY);

@@ -10,6 +10,9 @@
 #include "raymath.h"
 using namespace std;
 
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+  
 #include "xiong.h"
 #include "voss.h"
 #include "raymond.h"
