@@ -38,30 +38,41 @@ int main()
     const string MODEL_TEXTURE_PATH = "spaceBits\\Assets\\textures\\";
     const string CHARACTER_PATH = "adventurers\\Characters\\gltf\\";
 
+    // Set up vectors to store:
+    // Available .obj file-names as strings to load as models
+    // Available .glb file-names as strings to load as models (characters)
     vector<string> model_names = {"basemodule_A.obj", "basemodule_C.obj"};
     vector<string> character_names = {"barbarian.glb"};
+    // Vector to store all of our models, character or otherwise
     vector<Model> models;
 
-    for (int i = 0; i < model_names.size(); i++) // Add objects to models vector
+    // Load in models for every name in model_names vector
+    for (int i = 0; i < model_names.size(); i++)
     {
         models.push_back(LoadModel((MODEL_OBJ_PATH + model_names[i]).c_str()));
     }
 
-    for (int i = 0; i < character_names.size(); i++) // Add characters to models vector
+    // Load in models for every character in character_names vector
+    for (int i = 0; i < character_names.size(); i++)
     {
         models.push_back(LoadModel((CHARACTER_PATH + character_names[i]).c_str()));
     }
 
+    // Set up vectors to store:
+    // Available .png file-names to load as texture files
     vector<string> model_texture_names = {"spacebits_texture.png"};
     vector<string> character_texture_names = {"barbarian_texture.png"};
+    // Vector to store all of our textures
     vector<Texture2D> textures;
 
-    for (int i = 0; i < model_texture_names.size(); i++) // Add object textures to textures vector
+    // Load necessary textures for models
+    for (int i = 0; i < model_texture_names.size(); i++)
     {
         textures.push_back(LoadTexture((MODEL_TEXTURE_PATH + model_texture_names[i]).c_str()));
     }
 
-    for (int i = 0; i < character_texture_names.size(); i++) // Add character textures to textures vector
+    // Load necessary textures for characters
+    for (int i = 0; i < character_texture_names.size(); i++)
     {
         textures.push_back(LoadTexture((CHARACTER_PATH + character_texture_names[i]).c_str()));
     }
@@ -69,12 +80,12 @@ int main()
     // SPACE BITS
     // Space Model 1 (space1)
     float space1_scale = 0.5;
-    // Model space1 = LoadModel("spaceBits\\Assets\\obj\\basemodule_A.obj");
-    Model space1 = models.at(0); // Voss
-    // Texture2D space1_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
+    Model space1 = models.at(0); // Voss    
     Texture2D space1_tex = textures.at(0); // Voss
-    Vector3 space1_pos = {0.0f, 0.1f, -4.0f};
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
+    
+    // Set space1 position
+    Vector3 space1_pos = {0.0f, 0.1f, -4.0f};
     // Find the edges of the model
     BoundingBox space1_bounds = GetMeshBoundingBox(space1.meshes[0]);
     // Calculate size of the model
@@ -84,12 +95,12 @@ int main()
 
     // Space Model 2 (space2)
     float space2_scale = 0.75;
-    // Model space2 = LoadModel("spaceBits\\Assets\\obj\\basemodule_C.obj");
     Model space2 = models.at(1); // Voss
-    // Texture2D space2_tex = LoadTexture("spaceBits\\Assets\\textures\\spacebits_texture.png");
     Texture2D space2_tex = textures.at(0); // Voss
-    Vector3 space2_pos = {4.5f, 0.1f, -6.0f};
     space2.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
+    
+    // Set space2 position
+    Vector3 space2_pos = {4.5f, 0.1f, -6.0f};
     // Find the edges of the model
     BoundingBox space2_bounds = GetMeshBoundingBox(space2.meshes[0]);
     // Calculate size of the model
@@ -100,8 +111,8 @@ int main()
     // Barbarian (For Testing)
     // Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
     Model barbarian = models.at(2); // Voss
-    // Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
-    Texture2D barbarian_tex = textures.at(1); // Voss
+    Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
+    //Texture2D barbarian_tex = textures.at(1); // Voss
     Vector3 barbarian_pos = {0.0, 0.1, -10.0};
 
     // END MODEL LOADING
