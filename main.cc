@@ -21,12 +21,15 @@ int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
+    // Monitor Correction - Voss
     const int screenWidth = 3840;
     const int screenHeight = 2160;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
-    SetWindowMonitor(GetMonitorCount() == 3 ? 2 : 0);
-    // SetWindowSize(GetMonitorWidth(2),GetMonitorHeight(2));
+    int MONITOR = GetMonitorCount() == 3 ? 2 : 0;
+
+    SetWindowMonitor(MONITOR);
+    SetWindowSize(GetMonitorWidth(MONITOR), GetMonitorHeight(MONITOR));
 
     // BEGIN MODEL LOADING - MEG
 

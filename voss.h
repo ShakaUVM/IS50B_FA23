@@ -22,12 +22,12 @@ void voss(bool enabled)
     // North Wall
     Vector3 northWall_orig = (Vector3){-size, wallHeight / 2.0, size - size / 2.0};
     // South Wall
-    Vector3 southWall_orig = (Vector3){-size, wallHeight / 2.0, -(size + size / 2.0)};
+    Vector3 southWall_orig = (Vector3){-size, wallHeight / 2.0, -(size / 2.0)};
     // East Wall
-    Vector3 eastWall_orig = (Vector3){-size + size / 2.0, wallHeight / 2.0, -size};
+    Vector3 eastWall_orig = (Vector3){-((size / 2.0) * 3), wallHeight / 2.0, 0.0};
 
     // Draw Walls
     DrawCube(northWall_orig, size, wallHeight, wallThickness, GRAY);
     DrawCube(southWall_orig, size, wallHeight, wallThickness, GRAY);
-    DrawCube(eastWall_orig, wallThickness, wallHeight, size, GRAY);
+    DrawCube(eastWall_orig, wallThickness, wallHeight, size, GREEN);
 }
