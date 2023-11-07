@@ -35,6 +35,8 @@ int main()
     float mainChar_radius = 0.25;
     Vector3 mainChar_orig = (Vector3){ 0.0, mainChar_radius, 0.0};
     Vector3 mainChar_center = mainChar_orig;
+    float mainChar_speed = 0.25;
+    bool hitSomething = false;
     
     // END MAIN CHARACTER SET UP 
 
@@ -133,13 +135,14 @@ int main()
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = {0};
-    camera.position = (Vector3){0.0f, 2.0f, 4.0f}; // Camera position
-    camera.target = (Vector3){0.0f, 2.0f, 0.0f};   // Camera looking at point
+    //camera.position = (Vector3){0.0f, 2.0f, 4.0f}; // Camera position
+    camera.position = (Vector3){mainChar_center.x, mainChar_center.y + mainChar_radius * 2, mainChar_center.z + 2}; // Camera position
+    camera.target = (Vector3){mainChar_center.x, mainChar_center.y, mainChar_center.z - 2};   // Camera looking at point
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};       // Camera up vector (rotation towards target)
     camera.fovy = 60.0f;                           // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;        // Camera projection type
 
-    int cameraMode = CAMERA_FIRST_PERSON;
+    int cameraMode = CAMERA_THIRD_PERSON;
 
     // Generates some random columns
     float heights[MAX_COLUMNS] = {0};
@@ -170,10 +173,27 @@ int main()
             PlaySound(laser);
         }
         
+        // WASD Control for the Main Character
+        if(IsKeyDown(KEY_W)) {
+            mainChar_center.z -= mainChar_speed;
+        }
+        if(IsKeyDown(KEY_A)) {
+            mainChar_center.x -= mainChar_speed;
+        }
+        if(IsKeyDown(KEY_S)) {
+            mainChar_center.z += mainChar_speed;
+        }
+        if(IsKeyDown(KEY_D)) {
+            mainChar_center.x += mainChar_speed;
+        }
+        
+        if (CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius)){
+            DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
+        }
 
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
-        // For advance camera controls, it's reecommended to compute camera movement manually
+        // For advance camera controls, it's recommended to compute camera movement manually
         UpdateCamera(&camera, cameraMode); // Update camera
 
         //----------------------------------------------------------------------------------
@@ -210,7 +230,7 @@ int main()
         raymond(raymond_enabled);
 
         // Draw "character" sphere at the origin
-        DrawSphere((Vector3){ 0, 0.25, 0 }, 0.25, MAROON);
+        DrawSphere(mainChar_center, 0.25, MAROON);
         DrawSphereWires(mainChar_center, mainChar_radius, 10, 20, BLACK);   
 
         // Draw Space Bits
@@ -233,9 +253,8 @@ int main()
             DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
         }
         */
-
-
-
+        
+            
         EndMode3D();
 
         // Draw info boxes (HUD)
