@@ -39,6 +39,7 @@ int main()
     Vector3 mainChar_center = mainChar_orig;
     float mainChar_speed = 0.25;
     bool hitSomething = false;
+    float heightBeforeJump = mainChar_center.y;
     
     // END MAIN CHARACTER SET UP 
 
@@ -195,24 +196,37 @@ int main()
             if (hitSomething){
                 mainChar_center.z += mainChar_speed;
             }
-                
         }
         if(IsKeyDown(KEY_A)) {
             mainChar_center.x -= mainChar_speed;
+            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            if (hitSomething){
+                mainChar_center.x += mainChar_speed;
+            }
         }
         if(IsKeyDown(KEY_S)) {
             mainChar_center.z += mainChar_speed;
+            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            if (hitSomething){
+                mainChar_center.z -= mainChar_speed;
+            }
         }
         if(IsKeyDown(KEY_D)) {
             mainChar_center.x += mainChar_speed;
+            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            if (hitSomething){
+                mainChar_center.x -= mainChar_speed;
+            }
         }
         // Jumping for Main Character
+        // Very Basic
+        // Only works for the ground level and actually lets you stay in flight if you hold SPACE
         if(IsKeyPressed(KEY_SPACE)){
             mainChar_center.y += 1.0;
         }
         if(IsKeyReleased(KEY_SPACE)){
             while (mainChar_center.y > mainChar_radius){
-                mainChar_center.y -= (mainChar_speed / 10.0);
+                mainChar_center.y -= 0.10;
             }
         }
         
