@@ -40,8 +40,18 @@ int main()
     float mainChar_speed = 0.25;
     bool hitSomething = false;
     float heightBeforeJump = mainChar_center.y;
-    
     // END MAIN CHARACTER SET UP 
+    
+    
+    // BEGIN PLATFORM SET UP - MEG
+    // All Platforms
+    bool hitPlatform = false;
+    float platformHeight = 0.5f;
+    float platformThickness = 0.25f;
+    float platformWidth = 2.0f;
+    Vector3 platformOrigin = (Vector3){-3.0f, 0.5f, -8.0f};
+    BoundingBox platform_bBox = (BoundingBox){(Vector3){platformOrigin.x - platformWidth / 2.0f, platformOrigin.y - platformThickness / 2.0f, platformOrigin.z - platformWidth / 2.0f}, (Vector3){platformOrigin.x + platformWidth / 2.0f, platformOrigin.y + platformThickness / 2.0f, platformOrigin.z + platformWidth / 2.0f}};
+    // END PLATFORM SET UP
 
 
     // BEGIN MODEL LOADING - MEG
@@ -178,6 +188,7 @@ int main()
 // BEGIN MAIN LOOP 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
+        
         hitSomething = false;
         
         UpdateMusicStream(bgMusic);
@@ -222,12 +233,18 @@ int main()
         // Very Basic
         // Only works for the ground level and actually lets you stay in flight if you hold SPACE
         if(IsKeyPressed(KEY_SPACE)){
-            mainChar_center.y += 1.0;
+            mainChar_center.y += 1.5;
         }
         if(IsKeyReleased(KEY_SPACE)){
             while (mainChar_center.y > mainChar_radius){
                 mainChar_center.y -= 0.10;
+                hitPlatform = CheckCollisionBoxSphere(platform_bBox, mainChar_center, mainChar_radius);
+                if (hitPlatform){
+                    mainChar_center.y = (platformOrigin.y + platformThickness / 2.0f + mainChar_radius);
+                    break;
+                }
             }
+            
         }
         
         // Check to see if the player runs into space1
@@ -294,7 +311,13 @@ int main()
         // Draw Barbarian
         // DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
 
-        DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD); // Draw ground
+        // Draw Ground
+        DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, GOLD);
+        
+        // Draw Platforms
+        DrawCube(platformOrigin, platformWidth, platformThickness, platformWidth, DARKGREEN);
+        DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
+        DrawBoundingBox(platform_bBox, PINK);
        
 
         // Draw some cubes around
