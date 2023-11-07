@@ -187,9 +187,12 @@ int main()
             mainChar_center.x += mainChar_speed;
         }
         
+        // Check to see if the player runs into space1
         if (CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius)){
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
         }
+
+
 
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
