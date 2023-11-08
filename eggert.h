@@ -2,7 +2,6 @@
 #include "raylib.h"
 
 
-
 void eggert(bool enabled) {
     if (enabled){
 
@@ -23,6 +22,7 @@ void eggert(bool enabled) {
         // All Walls
         float wallHeight = 10.0;
         float wallThickness = 2.0;
+        
         
         // South Wall
         Vector3 southWall_orig = (Vector3){0.0f, wallHeight / 2.0f, -(size + size / 2.0f)};

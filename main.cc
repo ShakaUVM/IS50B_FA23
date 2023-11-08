@@ -102,6 +102,9 @@ int main()
     {
         textures.push_back(LoadTexture((CHARACTER_PATH + character_texture_names[i]).c_str()));
     }
+    
+    // Vector to store all bounding boxes
+    vector<BoundingBox> modelBoxes;
 
     // SPACE BITS
     // Space Model 1 (space1)
@@ -118,6 +121,7 @@ int main()
     Vector3 space1_size = (Vector3){space1_scale * (space1_bounds.max.x - space1_bounds.min.x), space1_scale * (space1_bounds.max.y - space1_bounds.min.y), space1_scale * (space1_bounds.max.z - space1_bounds.min.z)};
     // Create bounding box based on the size and position of the model
     BoundingBox space1_bBox = (BoundingBox){(Vector3){space1_pos.x - space1_size.x / 2, space1_pos.y - space1_size.y / 2, space1_pos.z - space1_size.z / 2}, (Vector3){space1_pos.x + space1_size.x / 2, space1_pos.y + space1_size.y, space1_pos.z + space1_size.z / 2}};
+    modelBoxes.push_back(space1_bBox);
 
     // Space Model 2 (space2)
     float space2_scale = 0.75;
@@ -133,6 +137,7 @@ int main()
     Vector3 space2_size = (Vector3){space2_scale * (space2_bounds.max.x - space2_bounds.min.x), space2_scale * (space2_bounds.max.y - space2_bounds.min.y), space2_scale * (space2_bounds.max.z - space2_bounds.min.z)};
     // Create bounding box based on the size and position of the model
     BoundingBox space2_bBox = (BoundingBox){(Vector3){space2_pos.x - space2_size.x / 2, space2_pos.y - space2_size.y / 2, space2_pos.z - space2_size.z / 2}, (Vector3){space2_pos.x + space2_size.x / 2, space2_pos.y + space2_size.y, space2_pos.z + space2_size.z / 2}};
+    modelBoxes.push_back(space2_bBox);
 
     // Barbarian (For Testing)
     // Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
@@ -208,29 +213,52 @@ int main()
         // WASD Control for the Main Character
         if(IsKeyDown(KEY_W)) {
             mainChar_center.z -= mainChar_speed;
-            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            for (size_t i = 0; i < modelBoxes.size(); i++){
+                bool hitTemp = false;
+                hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
+                if (hitTemp){
+                    hitSomething = true;
+                }
+            }
             if (hitSomething){
                 mainChar_center.z += mainChar_speed;
             }
         }
         if(IsKeyDown(KEY_A)) {
-            
             mainChar_center.x -= mainChar_speed;
-            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            for (size_t i = 0; i < modelBoxes.size(); i++){
+                bool hitTemp = false;
+                hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
+                if (hitTemp){
+                    hitSomething = true;
+                }
+            }
             if (hitSomething){
                 mainChar_center.x += mainChar_speed;
             }
         }
         if(IsKeyDown(KEY_S)) {
             mainChar_center.z += mainChar_speed;
-            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            for (size_t i = 0; i < modelBoxes.size(); i++){
+                bool hitTemp = false;
+                hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
+                if (hitTemp){
+                    hitSomething = true;
+                }
+            }
             if (hitSomething){
                 mainChar_center.z -= mainChar_speed;
             }
         }
         if(IsKeyDown(KEY_D)) {
             mainChar_center.x += mainChar_speed;
-            hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+            for (size_t i = 0; i < modelBoxes.size(); i++){
+                bool hitTemp = false;
+                hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
+                if (hitTemp){
+                    hitSomething = true;
+                }
+            }
             if (hitSomething){
                 mainChar_center.x -= mainChar_speed;
             }
@@ -254,7 +282,13 @@ int main()
         }
         
         // Check to see if the player runs into space1
-        hitSomething = CheckCollisionBoxSphere(space1_bBox, mainChar_center, mainChar_radius);
+        for (size_t i = 0; i < modelBoxes.size(); i++) {
+            
+            bool hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
+            if (hitTemp){
+                hitSomething = true;
+            }
+        }
         if (hitSomething){
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
         }
@@ -369,5 +403,5 @@ int main()
     {
         UnloadTexture(textures.at(i));
     }
-    //--------------------------------------------------------------------------------------
+    //-----------------------------------s---------------------------------------------------
 }
