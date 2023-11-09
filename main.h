@@ -3,11 +3,12 @@
 //Common header file
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "raylib.h"
 #include "rcameracopy.h"
-#include "shapes.h"
 using namespace std;
 
+#include "shapes.h"
 #include "xiong.h"
 #include "voss.h"
 #include "raymond.h"

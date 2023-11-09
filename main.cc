@@ -25,9 +25,12 @@ int main()
     const int screenWidth = 3840;
     const int screenHeight = 2160;
 
+    //These vectors are for storing the shape "models" and the data needed to draw them.
     vector<Cube> cubes;
     vector<Sphere> spheres;
     vector<Plane> planes;
+    //This vector contains all of the bounding boxes for all objects in the level, if you create an object post first frame, you must create these yourself. Be sure not to do it in a loop, because they persist.
+    vector<BoundingBox> boxes;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     int MONITOR = GetMonitorCount() == 3 ? 2 : 0;
@@ -143,7 +146,11 @@ int main()
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
+    // Only create the bounding boxes once on the start of the game, if you add more boxes after the first frame you must add the bounding boxes yourself.
+    bool boxesCreated = false;
 
+    BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3) {camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
+    boxes.push_back(cameraBB);
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
@@ -210,21 +217,22 @@ int main()
             }
         }
         */
-
-        // Update camera computes movement internally depending on the camera mode
-        // Some default standard keyboard/mouse inputs are hardcoded to simplify use
-        // For advance camera controls, it's reecommended to compute camera movement manually
-        UpdateCamera(&camera, cameraMode); // Update camera
-
-
         // Delta movement
         Vector3 proposedMove = (Vector3){0,0,0};
         // I'll figure this out later
         Vector3 rotation = (Vector3){0,0,0};
         
         const int MOVESPEED = 1;
+        // Update camera computes movement internally depending on the camera mode
+        // Some default standard keyboard/mouse inputs are hardcoded to simplify use
+        // For advance camera controls, it's reecommended to compute camera movement manually
+        if(boxesCreated) CheckCollisionsSean(&camera, proposedMove, boxes);
+        UpdateCamera(&camera, cameraMode); // Update camera
+        boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
+        boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
+
+      
         
-        CheckCollisions(&camera, proposedMove, cubes, spheres, planes);
 
         
         // if(IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { proposedMove.y += MOVESPEED;}
@@ -288,6 +296,31 @@ int main()
         kerney(kerney_enabled);
         raymond(raymond_enabled, cubes, spheres, planes);
         
+        //This will create bounding boxes for every object added to the cubes, spheres, and planes vectors in the first frame. everything after the first frame, you gotta create your own bounding boxes and index them properly.
+        if(!boxesCreated) {
+            boxesCreated = true;
+            int count = boxes.size();
+            for(int i = 0; i < cubes.size(); i++) {
+                cubes.at(i).boundingBoxIndex = count;
+                BoundingBox temp = {(Vector3){cubes.at(i).position.x - cubes.at(i).size.x/2, cubes.at(i).position.y - cubes.at(i).size.y/2, cubes.at(i).position.z - cubes.at(i).size.z/2},(Vector3){cubes.at(i).position.x + cubes.at(i).size.x/2, cubes.at(i).position.y + cubes.at(i).size.y/2, cubes.at(i).position.z + cubes.at(i).size.z/2}};
+                boxes.push_back(temp);
+                count++;
+            }
+            cout << boxes.size() << endl; 
+            for(int i = 0; i < spheres.size(); i++) {
+                spheres.at(i).boundingBoxIndex = count;                
+                BoundingBox temp = {(Vector3){spheres.at(i).position.x - spheres.at(i).radius/2, spheres.at(i).position.y - spheres.at(i).radius/2, spheres.at(i).position.z - spheres.at(i).radius/2},(Vector3){spheres.at(i).position.x + spheres.at(i).radius/2,spheres.at(i).position.y + spheres.at(i).radius/2, spheres.at(i).position.z + spheres.at(i).radius/2}};
+                boxes.push_back(temp);
+                count++;
+            }
+            for(int i = 0; i < planes.size(); i++) {
+                planes.at(i).boundingBoxIndex = count;
+                BoundingBox temp = {(Vector3){planes.at(i).position.x - planes.at(i).size.x / 2, planes.at(i).position.y - 1, planes.at(i).position.z - planes.at(i).size.y / 2}, (Vector3){planes.at(i).position.x + planes.at(i).size.x/2, planes.at(i).position.y, planes.at(i).position.z + planes.at(i).size.y/2}};
+                boxes.push_back(temp);
+                count++;
+            }
+        }
+        
         for(Cube& c : cubes) {
             c.Draw();
         }
@@ -298,6 +331,10 @@ int main()
         
         for(Plane& p : planes) {
             p.Draw();
+        }
+        // just for debugging, can be commented out
+        for(BoundingBox& bb : boxes) {
+            DrawBoundingBox(bb, GOLD);
         }
         
 

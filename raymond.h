@@ -12,7 +12,7 @@ void raymond(bool enabled, vector<Cube>& cubes, vector<Sphere>& spheres, vector<
     floor.position = origin;
     floor.position.y -= 2.5f;
     floor.size = (Vector2){32.0f, 32.0f};
-    floor.color = GOLD;
+    floor.color = GRAY;
 
     //WALLS
     Cube wall1, wall2, wall3;
@@ -58,13 +58,4 @@ void raymond(bool enabled, vector<Cube>& cubes, vector<Sphere>& spheres, vector<
     cubes.push_back(box1);
     cubes.push_back(box2);
     planes.push_back(floor);
-    
-    
-    // floor.Draw();
-    // wall1.Draw();
-    // wall2.Draw();
-    // wall3.Draw();
-    // box1.Draw();
-    // box2.Draw();
-    
 }
