@@ -204,9 +204,11 @@ int main()
     // Only create the bounding boxes once on the start of the game, if you add more boxes after the first frame you must add the bounding boxes yourself.
     bool boxesCreated = false;
 
-    BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3) {camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
+    // BEGIN MAIN LOOP
+	BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3) {camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
     boxes.push_back(cameraBB);
     // Main game loop
+
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
 
@@ -325,7 +327,10 @@ int main()
         {
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
         }
-        */
+
+        // Update camera computes movement internally depending on the camera mode
+        // Some default standard keyboard/mouse inputs are hardcoded to simplify use
+        // For advance camera controls, it's recommended to compute camera movement manually
         // Delta movement
         Vector3 proposedMove = (Vector3){0,0,0};
         // I'll figure this out later
@@ -339,6 +344,19 @@ int main()
         UpdateCamera(&camera, cameraMode); // Update camera
         boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
         boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
+
+      
+        
+
+        
+        // if(IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { proposedMove.y += MOVESPEED;}
+        // if(IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) { proposedMove.x -= MOVESPEED;}
+        // if(IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) { proposedMove.y -= MOVESPEED;}
+        // if(IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {proposedMove.x += MOVESPEED;}
+
+        
+        // ignore the 1, zoom is disabled
+        //UpdateCameraPro(&camera, proposedMove, rotation, 1);
 
         //----------------------------------------------------------------------------------
 
