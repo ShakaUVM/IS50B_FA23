@@ -211,7 +211,6 @@ int main()
 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
-
         hitSomething = false;
 
         UpdateMusicStream(bgMusic);
@@ -481,6 +480,7 @@ int main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    
     CloseWindow(); // Close window and OpenGL context
     CloseAudioDevice();
 
