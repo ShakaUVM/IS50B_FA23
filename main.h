@@ -8,6 +8,7 @@
 #include "shapes.h"
 #include "rlTPCamera.h"
 #include "raymath.h"
+#include "rlgl.h" //For the skybox - Bruce Xiong
 using namespace std;
 
 #pragma GCC diagnostic ignored "-Wunused-variable"

@@ -16,10 +16,4 @@ void xiong(bool enabled) {
     DrawCylinder((Vector3){ 0.0f, 0.0f, 32.0f } , 2.8f, 2.8f, 1.2f, 20, SKYBLUE);
     DrawCylinderWires((Vector3){0.0f, 0.0f, 32.0f} , 2.8f, 2.8f, 1.3f, 20, BLUE); // Draw a cylinder wires   
     DrawSphereWires(Vector3{ 0.0f, 3.5f, 32.0f }, 2.0f, 10, 10, GOLD); 
-    
-    /*for (int i = 0; i < 10; i++) {
-        DrawCube(positions[i], 2.0f, heights[i], 2.0f, LIGHTGRAY);
-        //DrawCubeWires(positions[32], 2.0f, heights[i], 2.0f, MAROON);
-    }*/
- 
 }
