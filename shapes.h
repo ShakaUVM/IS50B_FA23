@@ -37,7 +37,7 @@ struct Cube {
 };
 
 
-void CheckCollisionsSean(Camera*camera, Vector3& movement, vector<BoundingBox> boundingBoxes) {
+void CheckCollisionsSean(Camera*camera/*, Vector3& movement*/, vector<BoundingBox> boundingBoxes) {
     
     Vector3 newLocation = camera->position;
     newLocation.x += movement.x;

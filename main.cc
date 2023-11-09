@@ -332,15 +332,16 @@ int main()
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
         // For advance camera controls, it's recommended to compute camera movement manually
         // Delta movement
-        Vector3 proposedMove = (Vector3){0,0,0};
+        //Vector3 proposedMove = (Vector3){0,0,0};
         // I'll figure this out later
-        Vector3 rotation = (Vector3){0,0,0};
+        //Vector3 rotation = (Vector3){0,0,0};
         
-        const int MOVESPEED = 1;
+        //const int MOVESPEED = 1;
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
         // For advance camera controls, it's reecommended to compute camera movement manually
-        if(boxesCreated) CheckCollisionsSean(&camera, proposedMove, boxes);
+        if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
+        //
         UpdateCamera(&camera, cameraMode); // Update camera
         boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
         boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
