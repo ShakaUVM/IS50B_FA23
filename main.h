@@ -3,6 +3,7 @@
 //Common header file
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "raylib.h"
 #include "rcameracopy.h"
 #include "shapes.h"
@@ -11,6 +12,7 @@
 #include "rlgl.h" //For the skybox - Bruce Xiong
 using namespace std;
 
+#include "shapes.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
   
