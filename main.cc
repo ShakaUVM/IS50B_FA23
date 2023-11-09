@@ -38,7 +38,15 @@ int main()
 
     SetWindowMonitor(MONITOR);
     SetWindowSize(GetMonitorWidth(MONITOR), GetMonitorHeight(MONITOR));
+<<<<<<< Updated upstream
 
+=======
+<<<<<<< HEAD
+    
+=======
+
+>>>>>>> 65a79a55c6a6d9aae1540da953e1a16d137a5880
+>>>>>>> Stashed changes
     // BEGIN MAIN CHARACTER SET UP - MEG
     float mainChar_radius = 0.25;
     Vector3 mainChar_orig = (Vector3){0.0, mainChar_radius, 0.0};
@@ -211,9 +219,21 @@ int main()
 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
+<<<<<<< Updated upstream
 
         hitSomething = false;
 
+=======
+<<<<<<< HEAD
+        
+        hitSomething = false; 
+        
+=======
+
+        hitSomething = false;
+
+>>>>>>> 65a79a55c6a6d9aae1540da953e1a16d137a5880
+>>>>>>> Stashed changes
         UpdateMusicStream(bgMusic);
         // rlTPCameraBeginMode3D(&orbitCam);
 
@@ -481,6 +501,7 @@ int main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    
     CloseWindow(); // Close window and OpenGL context
     CloseAudioDevice();
 
