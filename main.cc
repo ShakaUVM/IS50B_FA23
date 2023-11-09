@@ -11,8 +11,7 @@
 // Template Code Copyright (c) 2015-2023 Ramon Santamaria (@raysan5)
 
 #include "main.h"
-
-
+#include <unordered_map>
 
 const int MAX_COLUMNS = 20;
 
@@ -32,21 +31,21 @@ int main()
 
     SetWindowMonitor(MONITOR);
     SetWindowSize(GetMonitorWidth(MONITOR), GetMonitorHeight(MONITOR));
-    
+
     // BEGIN MAIN CHARACTER SET UP - MEG
     float mainChar_radius = 0.25;
-    Vector3 mainChar_orig = (Vector3){ 0.0, mainChar_radius, 0.0};
+    Vector3 mainChar_orig = (Vector3){0.0, mainChar_radius, 0.0};
     Vector3 mainChar_center = mainChar_orig;
     float mainChar_speed = 0.25;
     bool hitSomething = false;
-    
+
     // Faux State Machine
     bool onFloor = true;
     bool onPlatform = false;
     bool isJumping = false;
     bool isFalling = false;
-    // END MAIN CHARACTER SET UP 
-    
+    // END MAIN CHARACTER SET UP
+
     // BEGIN PLATFORM SET UP - MEG
     // All Platforms
     bool hitPlatform = false;
@@ -56,7 +55,6 @@ int main()
     Vector3 platformOrigin = (Vector3){-3.0f, 0.5f, -8.0f};
     BoundingBox platform_bBox = (BoundingBox){(Vector3){platformOrigin.x - platformWidth / 2.0f, platformOrigin.y - platformThickness / 2.0f, platformOrigin.z - platformWidth / 2.0f}, (Vector3){platformOrigin.x + platformWidth / 2.0f, platformOrigin.y + platformThickness / 2.0f, platformOrigin.z + platformWidth / 2.0f}};
     // END PLATFORM SET UP
-
 
     // BEGIN MODEL LOADING - MEG
     // Improved Model Loading?? - Voss
@@ -102,17 +100,22 @@ int main()
     {
         textures.push_back(LoadTexture((CHARACTER_PATH + character_texture_names[i]).c_str()));
     }
-    
+
     // Vector to store all bounding boxes
     vector<BoundingBox> modelBoxes;
+
+    // Voss SolidObject test (not ready - need to add more to SolidObject class)
+    // unordered_map<string, SolidObject> solidObjects;
+    // solidObjects["space1"] = SolidObject("space1", (Vector3){0.0f, 0.1f, -4.0f}, MODEL_OBJ_PATH + "basemodule_A.obj", MODEL_TEXTURE_PATH + "spacebits_texture.png", 0.5f, WHITE, true, true);
+    // solidObjects["space2"] = SolidObject("space2", (Vector3){4.5f, 0.1f, -6.0f}, MODEL_OBJ_PATH + "basemodule_C.obj", MODEL_TEXTURE_PATH + "spacebits_texture.png", 0.75f, WHITE, true, true);
 
     // SPACE BITS
     // Space Model 1 (space1)
     float space1_scale = 0.5;
-    Model space1 = models.at(0); // Voss    
+    Model space1 = models.at(0);           // Voss
     Texture2D space1_tex = textures.at(0); // Voss
     space1.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
-    
+
     // Set space1 position
     Vector3 space1_pos = {0.0f, 0.1f, -4.0f};
     // Find the edges of the model
@@ -125,10 +128,10 @@ int main()
 
     // Space Model 2 (space2)
     float space2_scale = 0.75;
-    Model space2 = models.at(1); // Voss
+    Model space2 = models.at(1);           // Voss
     Texture2D space2_tex = textures.at(0); // Voss
     space2.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = space1_tex;
-    
+
     // Set space2 position
     Vector3 space2_pos = {4.5f, 0.1f, -6.0f};
     // Find the edges of the model
@@ -143,7 +146,7 @@ int main()
     // Model barbarian = LoadModel ("adventurers\\Characters\\gltf\\Barbarian.glb");
     Model barbarian = models.at(2); // Voss
     Texture2D barbarian_tex = LoadTexture("adventurers\\Characters\\gltf\\barbarian_texture.png");
-    //Texture2D barbarian_tex = textures.at(1); // Voss
+    // Texture2D barbarian_tex = textures.at(1); // Voss
     Vector3 barbarian_pos = {0.0, 0.1, -10.0};
 
     // END MODEL LOADING
@@ -157,15 +160,15 @@ int main()
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = {0};
-    //camera.position = (Vector3){0.0f, 2.0f, 4.0f}; // Camera position
+    // camera.position = (Vector3){0.0f, 2.0f, 4.0f}; // Camera position
     camera.position = (Vector3){mainChar_center.x, mainChar_center.y + mainChar_radius * 2, mainChar_center.z + 2}; // Camera position
-    camera.target = (Vector3){mainChar_center.x, mainChar_center.y, mainChar_center.z - 2};   // Camera looking at point
-    camera.up = (Vector3){0.0f, 1.0f, 0.0f};       // Camera up vector (rotation towards target)
-    camera.fovy = 60.0f;                           // Camera field-of-view Y
-    camera.projection = CAMERA_PERSPECTIVE;        // Camera projection type
+    camera.target = (Vector3){mainChar_center.x, mainChar_center.y, mainChar_center.z - 2};                         // Camera looking at point
+    camera.up = (Vector3){0.0f, 1.0f, 0.0f};                                                                        // Camera up vector (rotation towards target)
+    camera.fovy = 60.0f;                                                                                            // Camera field-of-view Y
+    camera.projection = CAMERA_PERSPECTIVE;                                                                         // Camera projection type
 
     int cameraMode = CAMERA_THIRD_PERSON;
-    
+
     // stolen from a github repo. doesn't currently work
     // setup initial camera data
     /*
@@ -173,7 +176,7 @@ int main()
     rlTPCameraInit(&orbitCam, 45, (Vector3){ 1, 0 ,0 });
     orbitCam.ViewAngles.y = -15 * DEG2RAD;
     */
-    
+
     // Generates some random columns
     float heights[MAX_COLUMNS] = {0};
     Vector3 positions[MAX_COLUMNS] = {0};
@@ -188,112 +191,129 @@ int main()
     }
     */
 
-    DisableCursor(); // Limit cursor to relative movement inside the window
+    DisableCursor();  // Limit cursor to relative movement inside the window
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-
-
-// BEGIN MAIN LOOP 
+    // BEGIN MAIN LOOP
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
-        
+
         hitSomething = false;
 
-        
         UpdateMusicStream(bgMusic);
-        //rlTPCameraBeginMode3D(&orbitCam);
+        // rlTPCameraBeginMode3D(&orbitCam);
 
         // Press 'k' to play a laser sound
         if (IsKeyPressed(KEY_K))
         {
             PlaySound(laser);
         }
-        
+
         // WASD Control for the Main Character
-        if(IsKeyDown(KEY_W)) {
+        if (IsKeyDown(KEY_W))
+        {
             mainChar_center.z -= mainChar_speed;
-            for (size_t i = 0; i < modelBoxes.size(); i++){
+            for (size_t i = 0; i < modelBoxes.size(); i++)
+            {
                 bool hitTemp = false;
                 hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
-                if (hitTemp){
+                if (hitTemp)
+                {
                     hitSomething = true;
                 }
             }
-            if (hitSomething){
+            if (hitSomething)
+            {
                 mainChar_center.z += mainChar_speed;
             }
         }
-        if(IsKeyDown(KEY_A)) {
+        if (IsKeyDown(KEY_A))
+        {
             mainChar_center.x -= mainChar_speed;
-            for (size_t i = 0; i < modelBoxes.size(); i++){
+            for (size_t i = 0; i < modelBoxes.size(); i++)
+            {
                 bool hitTemp = false;
                 hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
-                if (hitTemp){
+                if (hitTemp)
+                {
                     hitSomething = true;
                 }
             }
-            if (hitSomething){
+            if (hitSomething)
+            {
                 mainChar_center.x += mainChar_speed;
             }
         }
-        if(IsKeyDown(KEY_S)) {
+        if (IsKeyDown(KEY_S))
+        {
             mainChar_center.z += mainChar_speed;
-            for (size_t i = 0; i < modelBoxes.size(); i++){
+            for (size_t i = 0; i < modelBoxes.size(); i++)
+            {
                 bool hitTemp = false;
                 hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
-                if (hitTemp){
+                if (hitTemp)
+                {
                     hitSomething = true;
                 }
             }
-            if (hitSomething){
+            if (hitSomething)
+            {
                 mainChar_center.z -= mainChar_speed;
             }
         }
-        if(IsKeyDown(KEY_D)) {
+        if (IsKeyDown(KEY_D))
+        {
             mainChar_center.x += mainChar_speed;
-            for (size_t i = 0; i < modelBoxes.size(); i++){
+            for (size_t i = 0; i < modelBoxes.size(); i++)
+            {
                 bool hitTemp = false;
                 hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
-                if (hitTemp){
+                if (hitTemp)
+                {
                     hitSomething = true;
                 }
             }
-            if (hitSomething){
+            if (hitSomething)
+            {
                 mainChar_center.x -= mainChar_speed;
             }
         }
         // Jumping for Main Character
         // Very Basic
         // Only works for the ground level and actually lets you stay in flight if you hold SPACE
-        if(IsKeyPressed(KEY_SPACE)){
+        if (IsKeyPressed(KEY_SPACE))
+        {
             mainChar_center.y += 1.5;
         }
-        if(IsKeyReleased(KEY_SPACE)){
-            while (mainChar_center.y > mainChar_radius){
+        if (IsKeyReleased(KEY_SPACE))
+        {
+            while (mainChar_center.y > mainChar_radius)
+            {
                 mainChar_center.y -= 0.10;
                 hitPlatform = CheckCollisionBoxSphere(platform_bBox, mainChar_center, mainChar_radius);
-                if (hitPlatform){
+                if (hitPlatform)
+                {
                     mainChar_center.y = (platformOrigin.y + platformThickness / 2.0f + mainChar_radius);
                     break;
                 }
             }
-            
         }
-        
+
         // Check to see if the player runs into space1
-        for (size_t i = 0; i < modelBoxes.size(); i++) {
-            
+        for (size_t i = 0; i < modelBoxes.size(); i++)
+        {
+
             bool hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
-            if (hitTemp){
+            if (hitTemp)
+            {
                 hitSomething = true;
             }
         }
-        if (hitSomething){
+        if (hitSomething)
+        {
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
         }
-
-
 
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
@@ -332,15 +352,13 @@ int main()
         voss(voss_enabled);
         kerney(kerney_enabled);
         raymond(raymond_enabled);
-        
-        
-        // target point
-        //DrawSphere(orbitCam.CameraPosition, 0.25f, RED);
 
+        // target point
+        // DrawSphere(orbitCam.CameraPosition, 0.25f, RED);
 
         // Draw "character" sphere at the origin
         DrawSphere(mainChar_center, 0.25, MAROON);
-        DrawSphereWires(mainChar_center, mainChar_radius, 10, 20, WHITE);   
+        DrawSphereWires(mainChar_center, mainChar_radius, 10, 20, WHITE);
 
         // Draw Space Bits
         DrawModel(space1, space1_pos, space1_scale, WHITE);
@@ -353,12 +371,11 @@ int main()
 
         // Draw Ground
         DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, BEIGE);
-        
+
         // Draw Platforms
         DrawCube(platformOrigin, platformWidth, platformThickness, platformWidth, DARKGREEN);
         DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
         DrawBoundingBox(platform_bBox, WHITE);
-       
 
         // Draw some cubes around
         /*
@@ -368,17 +385,15 @@ int main()
             DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
         }
         */
-        
-            
+
         EndMode3D();
-        //rlTPCameraEndMode3D();
+        // rlTPCameraEndMode3D();
 
         // Draw info boxes (HUD)
         DrawRectangle(5, 5, 330, 100, Fade(BLUE, 0.5f));
         DrawRectangleLines(5, 5, 330, 100, BLACK);
         DrawText("Press 'K' to Laser", 15, 30, 10, WHITE);
 
-        
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
@@ -391,13 +406,13 @@ int main()
     // Unload Sounds - Meg
     UnloadSound(laser);
     UnloadMusicStream(bgMusic);
-    
+
     // Unload All Models
     for (size_t i = 0; i < models.size(); i++)
     {
         UnloadModel(models.at(i));
     }
-    
+
     // Unload All Textures
     for (size_t i = 0; i < textures.size(); i++)
     {
