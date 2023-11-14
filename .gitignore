@@ -1,6 +1,6 @@
 #ignore config folders --WRK
 .vs
-.vscode
+#.vscode
 
 # Prerequisites
 *.d
