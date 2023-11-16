@@ -395,20 +395,20 @@ int main()
         if(!boxesCreated) {
             boxesCreated = true;
             int count = boxes.size();
-            for(int i = 0; i < cubes.size(); i++) {
+            for(size_t i = 0; i < cubes.size(); i++) {
                 cubes.at(i).boundingBoxIndex = count;
                 BoundingBox temp = {(Vector3){cubes.at(i).position.x - cubes.at(i).size.x/2, cubes.at(i).position.y - cubes.at(i).size.y/2, cubes.at(i).position.z - cubes.at(i).size.z/2},(Vector3){cubes.at(i).position.x + cubes.at(i).size.x/2, cubes.at(i).position.y + cubes.at(i).size.y/2, cubes.at(i).position.z + cubes.at(i).size.z/2}};
                 boxes.push_back(temp);
                 count++;
             }
             cout << boxes.size() << endl; 
-            for(int i = 0; i < spheres.size(); i++) {
+            for(size_t i = 0; i < spheres.size(); i++) {
                 spheres.at(i).boundingBoxIndex = count;                
                 BoundingBox temp = {(Vector3){spheres.at(i).position.x - spheres.at(i).radius/2, spheres.at(i).position.y - spheres.at(i).radius/2, spheres.at(i).position.z - spheres.at(i).radius/2},(Vector3){spheres.at(i).position.x + spheres.at(i).radius/2,spheres.at(i).position.y + spheres.at(i).radius/2, spheres.at(i).position.z + spheres.at(i).radius/2}};
                 boxes.push_back(temp);
                 count++;
             }
-            for(int i = 0; i < planes.size(); i++) {
+            for(size_t i = 0; i < planes.size(); i++) {
                 planes.at(i).boundingBoxIndex = count;
                 BoundingBox temp = {(Vector3){planes.at(i).position.x - planes.at(i).size.x / 2, planes.at(i).position.y - 1, planes.at(i).position.z - planes.at(i).size.y / 2}, (Vector3){planes.at(i).position.x + planes.at(i).size.x/2, planes.at(i).position.y, planes.at(i).position.z + planes.at(i).size.y/2}};
                 boxes.push_back(temp);

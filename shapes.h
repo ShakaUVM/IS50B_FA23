@@ -46,7 +46,7 @@ void CheckCollisionsSean(Camera*camera/*, Vector3& movement*/, vector<BoundingBo
     
     
     
-    for(int i = 1; i < boundingBoxes.size(); i++) {
+    for(size_t i = 1; i < boundingBoxes.size(); i++) {
         BoundingBox& bb = boundingBoxes.at(i);
         if(CheckCollisionBoxes(boundingBoxes.at(0), bb)) cout << "Touch" << endl;
     }
