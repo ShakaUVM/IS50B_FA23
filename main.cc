@@ -40,6 +40,18 @@ int main()
     vector<Cube> cubes;
     vector<Sphere> spheres;
     vector<Plane> planes;
+    //These cubes can be picked up, they will be used for testing. Eventually will be subbed out for models or something
+    vector<Cube> pickups;
+    vector<Pickup> pickupTimers;
+    int pickupsCollected = 0;
+
+    //Temporary code for testing a pickup system. I'm not sure how we are going to actually implement the pickups, if we will have an inventory or just use a state machine or what
+    //-  This is mostly just for testing the collision and destruction of the object.
+    Cube pickupTest;
+    pickupTest.position = (Vector3){-2, 1, -3};
+    pickupTest.size = (Vector3) {1, 1, 1};
+    pickupTest.color = GREEN;
+    pickups.push_back(pickupTest);
     //This vector contains all of the bounding boxes for all objects in the level, if you create an object post first frame, you must create these yourself. Be sure not to do it in a loop, because they persist.
     vector<BoundingBox> boxes;
 
@@ -403,7 +415,7 @@ int main()
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
         // For advance camera controls, it's reecommended to compute camera movement manually
-        if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
+        //if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
         //
         UpdateCamera(&camera, cameraMode); // Update camera
         boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
@@ -497,6 +509,12 @@ int main()
                 boxes.push_back(temp);
                 count++;
             }
+            for(size_t i = 0; i < pickups.size(); i++) {
+                pickups.at(i).boundingBoxIndex = count;
+                BoundingBox temp = {(Vector3){pickups.at(i).position.x - pickups.at(i).size.x/2, pickups.at(i).position.y - pickups.at(i).size.y/2, pickups.at(i).position.z - pickups.at(i).size.z/2},(Vector3){pickups.at(i).position.x + pickups.at(i).size.x/2, pickups.at(i).position.y + pickups.at(i).size.y/2, pickups.at(i).position.z + pickups.at(i).size.z/2}};
+                boxes.push_back(temp);
+                count++;
+            }
         }
         
         for(Cube& c : cubes) {
@@ -510,11 +528,48 @@ int main()
         for(Plane& p : planes) {
             p.Draw();
         }
+
+        for(Cube& c : pickups) {
+            BoundingBox& pickupBB = boxes.at(c.boundingBoxIndex);
+            //boxes.at(0) is the camera bounding box
+            bool hit;
+            hit = CheckCollisionBoxes(boxes.at(0), pickupBB);
+            // Camera is touching a box
+            if(hit) {
+                pickupsCollected++;
+                //Instead of removing the pickup, just move it out of view.
+                //-     I don't know if creating new objects is expensive or not, so I prefer pooling.
+                Pickup p;
+                p.pickupIndex = c.boundingBoxIndex - pickups.at(0).boundingBoxIndex;
+                p.collected = true;
+                p.defaultLocation = c.position;
+                p.timeCollected = time(NULL);
+                p.respawnDelay = 1;
+                p.timerIndex = pickupTimers.size();
+                pickupTimers.push_back(p);
+                c.position = (Vector3){0,-90000,0};
+                pickupBB.min = (Vector3){c.position.x - c.size.x/2, c.position.y - c.size.y/2, c.position.z - c.size.z/2};
+                pickupBB.max = (Vector3){c.position.x + c.size.x/2, c.position.y + c.size.y/2, c.position.z + c.size.z/2};
+            } 
+            c.Draw();
+        }
+
+        for(Pickup p : pickupTimers) {
+            if(p.canRespawn()) {
+                cout << "HERE" << endl;
+                pickups.at(p.pickupIndex).position = p.defaultLocation;
+                BoundingBox& bb = boxes.at(pickups.at(p.pickupIndex).boundingBoxIndex);
+                Cube c = pickups.at(p.pickupIndex);
+                bb.min = (Vector3){c.position.x - c.size.x/2, c.position.y - c.size.y/2, c.position.z - c.size.z/2};
+                bb.max = (Vector3){c.position.x + c.size.x/2, c.position.y + c.size.y/2, c.position.z + c.size.z/2};
+                pickupTimers.erase(pickupTimers.begin() + p.timerIndex); 
+            }
+        }
+
         // just for debugging, can be commented out
         for(BoundingBox& bb : boxes) {
             DrawBoundingBox(bb, GOLD);
         }
-        
 
         // target point
         // DrawSphere(orbitCam.CameraPosition, 0.25f, RED);

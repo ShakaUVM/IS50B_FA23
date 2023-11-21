@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 #include "raylib.h"
 #include "rcameracopy.h"
 //#include "shapes.h"
