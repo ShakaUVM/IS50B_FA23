@@ -7,7 +7,7 @@ struct Plane
     Vector2 size = {1, 1};
     Color color = GREEN;
     int boundingBoxIndex = -1;
-    int indexId = -999; // TEST IDEA FOR SPECIFIC COLLISION - MEG
+    bool activated = false; // Meg
 
     void Draw()
     {
@@ -22,7 +22,7 @@ struct Sphere
     float radius = 1;
     Color color = RED;
     int boundingBoxIndex = -1;
-    int indexId = -999; // TEST IDEA FOR SPECIFIC COLLISION - MEG
+    bool activated = false; // Meg 
 
     void Draw()
     {
@@ -36,7 +36,7 @@ struct Cube
     Vector3 size = {1, 1, 1};
     Color color = BLUE;
     int boundingBoxIndex = -1;
-    int indexId = -999; // TEST IDEA FOR SPECIFIC COLLISION - MEG
+    bool activated = false; // Meg
 
     void Draw()
     {

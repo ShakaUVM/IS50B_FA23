@@ -610,17 +610,19 @@ int main()
         for (Cube &c : cubes)
         {
             if (hitACube){
-                if (c.position.x == hitLocation.x && c.position.y == hitLocation.y && c.position.z == hitLocation.z){
-                    c.color = DARKPURPLE;
-                    c.Draw();
+                if (c.position.x == hitLocation.x && c.position.y == hitLocation.y && c.position.z == hitLocation.z && c.activated == false){
+                    c.activated = true;
+                    
                 }
-                else {
-                    c.Draw();
-                }
+            }
+            if (c.activated == true){
+                c.color = DARKPURPLE;
+                c.Draw();
             }
             else {
                 c.Draw();
             }
+
         }
 
         for (Sphere &s : spheres)
@@ -737,15 +739,6 @@ int main()
             DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
             DrawBoundingBox(platform_bBox, WHITE);
         }
-
-        // Draw some cubes around
-        /*
-        for (int i = 0; i < MAX_COLUMNS; i++)
-        {
-            DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
-            DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
-        }
-        */
 
         EndMode3D();
         // rlTPCameraEndMode3D();
