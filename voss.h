@@ -32,152 +32,161 @@ void voss(bool enabled)
     DrawCube(eastWall_orig, wallThickness, wallHeight, size, GREEN);
 }
 
-// class SolidObject
-// {
-// private:
-//     string name;
-//     Vector3 position;
+class Enemy
+{
+private:
+    string name;
+    Vector3 position;
 
-//     Model model;
-//     string modelPath;
+    Model model;
+    string modelPath;
 
-//     Texture2D texture;
-//     string texturePath;
+    Texture2D texture;
+    string texturePath;
 
-//     float scale;
+    float scale;
 
-//     bool showBoundry;
-//     bool solid;
+    Vector3 speed;
+    Vector3 acceleration;
+    int health;
+    int damage;
 
-// public:
-//     SolidObject() delete; // Delete default constructor
+    bool showBoundry;
+    bool solid;
 
-//     SolidObject(
-//         string name,
-//         Vector3 position,
-//         string modelPath,
-//         string texturePath,
-//         float scale = 1.0f,
-//         Color color = WHITE,
-//         bool showBoundry = true,
-//         bool solid = true)
-//     {
-//         this->name = name;
-//         this->position = position;
-//         this->modelPath = modelPath;
-//         this->texturePath = texturePath;
-//         this->scale = scale;
-//         this->color = color;
-//         this->showBoundry = showBoundry;
-//         this->solid = solid;
+public:
+    Enemy() = delete; // Delete default constructor
 
-//         load();
-//     }
+    Enemy(
+        string name,
+        Vector3 position,
+        string modelPath,
+        string texturePath,
+        Vector3 speed = Vector3{0.0f, 0.0f, 0.0f},
+        Vector3 acceleration = Vector3{0.0f, 0.0f, 0.0f},
+        int health = 100,
+        int damage = 10,
+        float scale = 1.0f,
+        bool showBoundry = true,
+        bool solid = true)
+    {
+        this->name = name;
+        this->position = position;
+        this->modelPath = modelPath;
+        this->texturePath = texturePath;
+        this->speed = speed;
+        this->acceleration = acceleration;
+        this->health = health;
+        this->damage = damage;
+        this->scale = scale;
+        this->showBoundry = showBoundry;
+        this->solid = solid;
 
-//     ~SolidObject()
-//     {
-//         UnloadModel(model);
-//         UnloadTexture(texture);
-//     }
+        load();
+    }
 
-//     void load()
-//     {
-//         model = LoadModel(modelPath);
-//         texture = LoadTexture(texturePath);
-//         model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
-//     }
+    ~Enemy()
+    {
+        UnloadModel(model);
+        UnloadTexture(texture);
+    }
 
-//     void draw()
-//     {
-//         if (solid)
-//             DrawModel(model, position, scale, color);
-//         if (showBoundry)
-//             DrawBoundingBox(model.meshes[0].boundingBox, color);
-//     }
+    void load()
+    {
+        model = LoadModel(modelPath.c_str());
+        texture = LoadTexture(texturePath.c_str());
+        model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+    }
 
-//     // Getters
-//     string getName() { return name; }
-//     Vector3 getPosition() { return position; }
-//     Model getModel() { return model; }
-//     string getModelPath() { return modelPath; }
-//     Texture2D getTexture() { return texture; }
-//     string getTexturePath() { return texturePath; }
-//     float getScale() { return scale; }
-//     bool getShowBoundry() { return showBoundry; }
-//     bool getSolid() { return solid; }
+    void draw()
+    {
+        // Declare the CalculateBoundingBox function
+        // BoundingBox CalculateBoundingBox(Mesh mesh);
 
-//     // Setters
-//     void setName(string name) { this->name = name; }
-//     void setPosition(Vector3 position) { this->position = position; }
-//     void setModel(Model model) { this->model = model; }
-//     void setModelPath(string modelPath) { this->modelPath = modelPath; }
-//     void setTexture(Texture2D texture) { this->texture = texture; }
-//     void setTexturePath(string texturePath) { this->texturePath = texturePath; }
-//     void setScale(float scale) { this->scale = scale; }
-//     void setShowBoundry(bool showBoundry) { this->showBoundry = showBoundry; }
-//     void setSolid(bool solid) { this->solid = solid; }
+        if (solid)
+            DrawModel(model, position, scale, Color{255, 255, 255, 255});
+        // if (showBoundry && model.meshCount > 0)
+        // {
+        //     BoundingBox box = CalculateBoundingBox(model.meshes[0]);
+        //     DrawBoundingBox(box, Color{255, 255, 255, 255});
+        // }
 
-//     // Operators
-//     bool operator<(const SolidObject &other) const
-//     {
-//         return this->position.z < other.position.z;
-//     }
+        // Recalculate position, and speed
+        position.x += speed.x;
+        position.y += speed.y;
+        position.z += speed.z;
 
-//     bool operator>(const SolidObject &other) const
-//     {
-//         return this->position.z > other.position.z;
-//     }
+        const float maxSpeed = 0.1f;
 
-//     bool operator==(const SolidObject &other) const
-//     {
-//         return this->position.z == other.position.z;
-//     }
+        if (abs(speed.x) > maxSpeed)
+            acceleration.x *= -1.0f;
+        if (abs(speed.y) > maxSpeed)
+            acceleration.y *= -1.0f;
+        if (abs(speed.z) > maxSpeed)
+            acceleration.z *= -1.0f;
 
-//     // Methods
-//     void moveRelative(Vector3 position)
-//     {
-//         this->position.x += position.x;
-//         this->position.y += position.y;
-//         this->position.z += position.z;
-//     }
+        speed.x += acceleration.x;
+        speed.y += acceleration.y;
+        speed.z += acceleration.z;
+    }
 
-//     void moveRelativeX(float x)
-//     {
-//         this->position.x += x;
-//     }
+    // Getters
+    std::string getName() { return name; }
+    Vector3 getPosition() { return position; }
+    Model getModel() { return model; }
+    string getModelPath() { return modelPath; }
+    Texture2D getTexture() { return texture; }
+    string getTexturePath() { return texturePath; }
+    float getScale() { return scale; }
+    bool getShowBoundry() { return showBoundry; }
+    bool getSolid() { return solid; }
 
-//     void moveRelativeY(float y)
-//     {
-//         this->position.y += y;
-//     }
+    // Setters
+    void setName(string name) { this->name = name; }
+    void setPosition(Vector3 position) { this->position = position; }
+    void setModel(Model model) { this->model = model; }
+    void setModelPath(string modelPath) { this->modelPath = modelPath; }
+    void setTexture(Texture2D texture) { this->texture = texture; }
+    void setTexturePath(string texturePath) { this->texturePath = texturePath; }
+    void setScale(float scale) { this->scale = scale; }
+    void setShowBoundry(bool showBoundry) { this->showBoundry = showBoundry; }
+    void setSolid(bool solid) { this->solid = solid; }
 
-//     void moveRelativeZ(float z)
-//     {
-//         this->position.z += z;
-//     }
+    // Methods
+    void moveRelative(Vector3 position)
+    {
+        this->position.x += position.x;
+        this->position.y += position.y;
+        this->position.z += position.z;
+    }
 
-//     void moveAbsoluteX(float x)
-//     {
-//         this->position.x = x;
-//     }
+    void moveRelativeX(float x)
+    {
+        this->position.x += x;
+    }
 
-//     void moveAbsoluteY(float y)
-//     {
-//         this->position.y = y;
-//     }
+    void moveRelativeY(float y)
+    {
+        this->position.y += y;
+    }
 
-//     void moveAbsoluteZ(float z)
-//     {
-//         this->position.z = z;
-//     }
+    void moveRelativeZ(float z)
+    {
+        this->position.z += z;
+    }
 
-//     bool isColliding(SolidObject other)
-//     {
-//         return CheckCollisionBoxes(GetMeshBoundingBox(model.meshes[0]), GetMeshBoundingBox(other.model.meshes[0]));
-//     }
+    void moveAbsoluteX(float x)
+    {
+        this->position.x = x;
+    }
 
-//     bool isColliding(Vector3 position, float radius)
-//     {
-//         return CheckCollisionBoxSphere(GetMeshBoundingBox(model.meshes[0]), position, radius);
-//     }
-// };
+    void moveAbsoluteY(float y)
+    {
+        this->position.y = y;
+    }
+
+    void moveAbsoluteZ(float z)
+    {
+        this->position.z = z;
+    }
+};

@@ -13,11 +13,11 @@
 #include "main.h"
 #include <unordered_map>
 
-//For the skybox - Bruce Xiong
+// For the skybox - Bruce Xiong
 #if defined(PLATFORM_DESKTOP)
-    #define GLSL_VERSION            330
-#else   // PLATFORM_RPI, PLATFORM_ANDROID, PLATFORM_WEB
-    #define GLSL_VERSION            100
+#define GLSL_VERSION 330
+#else // PLATFORM_RPI, PLATFORM_ANDROID, PLATFORM_WEB
+#define GLSL_VERSION 100
 #endif
 
 // Generate cubemap (6 faces) from equirectangular (panorama) texture - Bruce Xiong
@@ -36,23 +36,23 @@ int main()
     const int screenWidth = 3840;
     const int screenHeight = 2160;
 
-    //These vectors are for storing the shape "models" and the data needed to draw them.
+    // These vectors are for storing the shape "models" and the data needed to draw them.
     vector<Cube> cubes;
     vector<Sphere> spheres;
     vector<Plane> planes;
-    //These cubes can be picked up, they will be used for testing. Eventually will be subbed out for models or something
+    // These cubes can be picked up, they will be used for testing. Eventually will be subbed out for models or something
     vector<Cube> pickups;
     vector<Pickup> pickupTimers;
     int pickupsCollected = 0;
 
-    //Temporary code for testing a pickup system. I'm not sure how we are going to actually implement the pickups, if we will have an inventory or just use a state machine or what
+    // Temporary code for testing a pickup system. I'm not sure how we are going to actually implement the pickups, if we will have an inventory or just use a state machine or what
     //-  This is mostly just for testing the collision and destruction of the object.
     Cube pickupTest;
     pickupTest.position = (Vector3){-2, 1, -3};
-    pickupTest.size = (Vector3) {1, 1, 1};
+    pickupTest.size = (Vector3){1, 1, 1};
     pickupTest.color = GREEN;
     pickups.push_back(pickupTest);
-    //This vector contains all of the bounding boxes for all objects in the level, if you create an object post first frame, you must create these yourself. Be sure not to do it in a loop, because they persist.
+    // This vector contains all of the bounding boxes for all objects in the level, if you create an object post first frame, you must create these yourself. Be sure not to do it in a loop, because they persist.
     vector<BoundingBox> boxes;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
@@ -137,6 +137,17 @@ int main()
     // unordered_map<string, SolidObject> solidObjects;
     // solidObjects["space1"] = SolidObject("space1", (Vector3){0.0f, 0.1f, -4.0f}, MODEL_OBJ_PATH + "basemodule_A.obj", MODEL_TEXTURE_PATH + "spacebits_texture.png", 0.5f, WHITE, true, true);
     // solidObjects["space2"] = SolidObject("space2", (Vector3){4.5f, 0.1f, -6.0f}, MODEL_OBJ_PATH + "basemodule_C.obj", MODEL_TEXTURE_PATH + "spacebits_texture.png", 0.75f, WHITE, true, true);
+    Enemy testEnemy = Enemy("testEnemy",
+                            (Vector3){0.0f, 0.1f, -4.0f},
+                            MODEL_OBJ_PATH + "basemodule_A.obj",
+                            MODEL_TEXTURE_PATH + "spacebits_texture.png",
+                            (Vector3){0.0f, 0.0f, 0.0f},
+                            (Vector3){-0.005f, 0.0f, 0.005f},
+                            100,
+                            10,
+                            0.5f,
+                            true,
+                            true);
 
     // SPACE BITS
     // Space Model 1 (space1)
@@ -189,7 +200,7 @@ int main()
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = {0};
-    camera.position = (Vector3){0.0f, 2.0f, 4.0f}; // Camera position
+    camera.position = (Vector3){0.0f, 2.0f, 4.0f};                                                                  // Camera position
     camera.position = (Vector3){mainChar_center.x, mainChar_center.y + mainChar_radius * 2, mainChar_center.z + 2}; // Camera position
     camera.target = (Vector3){mainChar_center.x, mainChar_center.y, mainChar_center.z - 2};                         // Camera looking at point
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};                                                                        // Camera up vector (rotation towards target)
@@ -222,8 +233,8 @@ int main()
     SetShaderValue(shdrCubemap, GetShaderLocation(shdrCubemap, "equirectangularMap"), &zerp, SHADER_UNIFORM_INT);
 
     char skyboxFileName[256] = { 0 };
-    
-    Texture2D panorama; 
+
+    Texture2D panorama;
     if (useHDR)
     {
         //TextCopy(skyboxFileName, "resources/dresden_square_2k.hdr"); //the original sample code
@@ -247,7 +258,7 @@ int main()
         UnloadImage(img);
     }
     //End of Skybox - Bruce Xiong
-    */ 
+    */
     // stolen from a github repo. doesn't currently work
     // setup initial camera data
     /*
@@ -277,7 +288,7 @@ int main()
     bool boxesCreated = false;
 
     // BEGIN MAIN LOOP
-	BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3) {camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
+    BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3){camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
     boxes.push_back(cameraBB);
     // Main game loop
 
@@ -285,7 +296,7 @@ int main()
     {
         hitSomething = false;
 
-        //xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
+        // xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
 
         UpdateMusicStream(bgMusic);
         // rlTPCameraBeginMode3D(&orbitCam);
@@ -405,32 +416,27 @@ int main()
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
         // For advance camera controls, it's recommended to compute camera movement manually
         // Delta movement
-        //Vector3 proposedMove = (Vector3){0,0,0};
+        // Vector3 proposedMove = (Vector3){0,0,0};
         // I'll figure this out later
-        //Vector3 rotation = (Vector3){0,0,0};
-        
-        //const int MOVESPEED = 1;
-        // Update camera computes movement internally depending on the camera mode
-        // Some default standard keyboard/mouse inputs are hardcoded to simplify use
-        // For advance camera controls, it's reecommended to compute camera movement manually
-        //if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
+        // Vector3 rotation = (Vector3){0,0,0};
+
+        // const int MOVESPEED = 1;
+        //  Update camera computes movement internally depending on the camera mode
+        //  Some default standard keyboard/mouse inputs are hardcoded to simplify use
+        //  For advance camera controls, it's reecommended to compute camera movement manually
+        // if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
         //
         UpdateCamera(&camera, cameraMode); // Update camera
         boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
         boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
 
-      
-        
-
-        
         // if(IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { proposedMove.y += MOVESPEED;}
         // if(IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) { proposedMove.x -= MOVESPEED;}
         // if(IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) { proposedMove.y -= MOVESPEED;}
         // if(IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {proposedMove.x += MOVESPEED;}
 
-        
         // ignore the 1, zoom is disabled
-        //UpdateCameraPro(&camera, proposedMove, rotation, 1);
+        // UpdateCameraPro(&camera, proposedMove, rotation, 1);
 
         //----------------------------------------------------------------------------------
 
@@ -459,75 +465,83 @@ int main()
         // Weapons
         BeginMode3D(camera);
 
-            
-            // For the skybox; We are inside the cube, we need to disable backface culling! - Bruce Xiong
-            //rlDisableBackfaceCulling();
-            //rlDisableDepthMask();
-            //DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
-            //rlEnableBackfaceCulling();
-            //rlEnableDepthMask();
-            //DrawGrid(10, 1.0f);
-            // End of skybox - Bruce Xiong
-            
+        // For the skybox; We are inside the cube, we need to disable backface culling! - Bruce Xiong
+        // rlDisableBackfaceCulling();
+        // rlDisableDepthMask();
+        // DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
+        // rlEnableBackfaceCulling();
+        // rlEnableDepthMask();
+        // DrawGrid(10, 1.0f);
+        // End of skybox - Bruce Xiong
 
         xiong(xiong_enabled);
         eggert(eggert_enabled);
         voss(voss_enabled);
         kerney(kerney_enabled);
         raymond(raymond_enabled, cubes, spheres, planes);
-        
-        //This will create bounding boxes for every object added to the cubes, spheres, and planes vectors in the first frame. everything after the first frame, you gotta create your own bounding boxes and index them properly.
-        if(!boxesCreated) {
+
+        // This will create bounding boxes for every object added to the cubes, spheres, and planes vectors in the first frame. everything after the first frame, you gotta create your own bounding boxes and index them properly.
+        if (!boxesCreated)
+        {
             boxesCreated = true;
             int count = boxes.size();
-            for(size_t i = 0; i < cubes.size(); i++) {
+            for (size_t i = 0; i < cubes.size(); i++)
+            {
                 cubes.at(i).boundingBoxIndex = count;
-                BoundingBox temp = {(Vector3){cubes.at(i).position.x - cubes.at(i).size.x/2, cubes.at(i).position.y - cubes.at(i).size.y/2, cubes.at(i).position.z - cubes.at(i).size.z/2},(Vector3){cubes.at(i).position.x + cubes.at(i).size.x/2, cubes.at(i).position.y + cubes.at(i).size.y/2, cubes.at(i).position.z + cubes.at(i).size.z/2}};
+                BoundingBox temp = {(Vector3){cubes.at(i).position.x - cubes.at(i).size.x / 2, cubes.at(i).position.y - cubes.at(i).size.y / 2, cubes.at(i).position.z - cubes.at(i).size.z / 2}, (Vector3){cubes.at(i).position.x + cubes.at(i).size.x / 2, cubes.at(i).position.y + cubes.at(i).size.y / 2, cubes.at(i).position.z + cubes.at(i).size.z / 2}};
                 boxes.push_back(temp);
                 count++;
             }
-            cout << boxes.size() << endl; 
-            for(size_t i = 0; i < spheres.size(); i++) {
-                spheres.at(i).boundingBoxIndex = count;                
-                BoundingBox temp = {(Vector3){spheres.at(i).position.x - spheres.at(i).radius/2, spheres.at(i).position.y - spheres.at(i).radius/2, spheres.at(i).position.z - spheres.at(i).radius/2},(Vector3){spheres.at(i).position.x + spheres.at(i).radius/2,spheres.at(i).position.y + spheres.at(i).radius/2, spheres.at(i).position.z + spheres.at(i).radius/2}};
+            cout << boxes.size() << endl;
+            for (size_t i = 0; i < spheres.size(); i++)
+            {
+                spheres.at(i).boundingBoxIndex = count;
+                BoundingBox temp = {(Vector3){spheres.at(i).position.x - spheres.at(i).radius / 2, spheres.at(i).position.y - spheres.at(i).radius / 2, spheres.at(i).position.z - spheres.at(i).radius / 2}, (Vector3){spheres.at(i).position.x + spheres.at(i).radius / 2, spheres.at(i).position.y + spheres.at(i).radius / 2, spheres.at(i).position.z + spheres.at(i).radius / 2}};
                 boxes.push_back(temp);
                 count++;
             }
-            for(size_t i = 0; i < planes.size(); i++) {
+            for (size_t i = 0; i < planes.size(); i++)
+            {
                 planes.at(i).boundingBoxIndex = count;
-                BoundingBox temp = {(Vector3){planes.at(i).position.x - planes.at(i).size.x / 2, planes.at(i).position.y - 1, planes.at(i).position.z - planes.at(i).size.y / 2}, (Vector3){planes.at(i).position.x + planes.at(i).size.x/2, planes.at(i).position.y, planes.at(i).position.z + planes.at(i).size.y/2}};
+                BoundingBox temp = {(Vector3){planes.at(i).position.x - planes.at(i).size.x / 2, planes.at(i).position.y - 1, planes.at(i).position.z - planes.at(i).size.y / 2}, (Vector3){planes.at(i).position.x + planes.at(i).size.x / 2, planes.at(i).position.y, planes.at(i).position.z + planes.at(i).size.y / 2}};
                 boxes.push_back(temp);
                 count++;
             }
-            for(size_t i = 0; i < pickups.size(); i++) {
+            for (size_t i = 0; i < pickups.size(); i++)
+            {
                 pickups.at(i).boundingBoxIndex = count;
-                BoundingBox temp = {(Vector3){pickups.at(i).position.x - pickups.at(i).size.x/2, pickups.at(i).position.y - pickups.at(i).size.y/2, pickups.at(i).position.z - pickups.at(i).size.z/2},(Vector3){pickups.at(i).position.x + pickups.at(i).size.x/2, pickups.at(i).position.y + pickups.at(i).size.y/2, pickups.at(i).position.z + pickups.at(i).size.z/2}};
+                BoundingBox temp = {(Vector3){pickups.at(i).position.x - pickups.at(i).size.x / 2, pickups.at(i).position.y - pickups.at(i).size.y / 2, pickups.at(i).position.z - pickups.at(i).size.z / 2}, (Vector3){pickups.at(i).position.x + pickups.at(i).size.x / 2, pickups.at(i).position.y + pickups.at(i).size.y / 2, pickups.at(i).position.z + pickups.at(i).size.z / 2}};
                 boxes.push_back(temp);
                 count++;
             }
         }
-        
-        for(Cube& c : cubes) {
+
+        for (Cube &c : cubes)
+        {
             c.Draw();
         }
-        
-        for(Sphere& s : spheres) {
+
+        for (Sphere &s : spheres)
+        {
             s.Draw();
         }
-        
-        for(Plane& p : planes) {
+
+        for (Plane &p : planes)
+        {
             p.Draw();
         }
 
-        for(Cube& c : pickups) {
-            BoundingBox& pickupBB = boxes.at(c.boundingBoxIndex);
-            //boxes.at(0) is the camera bounding box
+        for (Cube &c : pickups)
+        {
+            BoundingBox &pickupBB = boxes.at(c.boundingBoxIndex);
+            // boxes.at(0) is the camera bounding box
             bool hit;
             hit = CheckCollisionBoxes(boxes.at(0), pickupBB);
             // Camera is touching a box
-            if(hit) {
+            if (hit)
+            {
                 pickupsCollected++;
-                //Instead of removing the pickup, just move it out of view.
+                // Instead of removing the pickup, just move it out of view.
                 //-     I don't know if creating new objects is expensive or not, so I prefer pooling.
                 Pickup p;
                 p.pickupIndex = c.boundingBoxIndex - pickups.at(0).boundingBoxIndex;
@@ -537,27 +551,30 @@ int main()
                 p.respawnDelay = 1;
                 p.timerIndex = pickupTimers.size();
                 pickupTimers.push_back(p);
-                c.position = (Vector3){0,-90000,0};
-                pickupBB.min = (Vector3){c.position.x - c.size.x/2, c.position.y - c.size.y/2, c.position.z - c.size.z/2};
-                pickupBB.max = (Vector3){c.position.x + c.size.x/2, c.position.y + c.size.y/2, c.position.z + c.size.z/2};
-            } 
+                c.position = (Vector3){0, -90000, 0};
+                pickupBB.min = (Vector3){c.position.x - c.size.x / 2, c.position.y - c.size.y / 2, c.position.z - c.size.z / 2};
+                pickupBB.max = (Vector3){c.position.x + c.size.x / 2, c.position.y + c.size.y / 2, c.position.z + c.size.z / 2};
+            }
             c.Draw();
         }
 
-        for(Pickup p : pickupTimers) {
-            if(p.canRespawn()) {
+        for (Pickup p : pickupTimers)
+        {
+            if (p.canRespawn())
+            {
                 cout << "HERE" << endl;
                 pickups.at(p.pickupIndex).position = p.defaultLocation;
-                BoundingBox& bb = boxes.at(pickups.at(p.pickupIndex).boundingBoxIndex);
+                BoundingBox &bb = boxes.at(pickups.at(p.pickupIndex).boundingBoxIndex);
                 Cube c = pickups.at(p.pickupIndex);
-                bb.min = (Vector3){c.position.x - c.size.x/2, c.position.y - c.size.y/2, c.position.z - c.size.z/2};
-                bb.max = (Vector3){c.position.x + c.size.x/2, c.position.y + c.size.y/2, c.position.z + c.size.z/2};
-                pickupTimers.erase(pickupTimers.begin() + p.timerIndex); 
+                bb.min = (Vector3){c.position.x - c.size.x / 2, c.position.y - c.size.y / 2, c.position.z - c.size.z / 2};
+                bb.max = (Vector3){c.position.x + c.size.x / 2, c.position.y + c.size.y / 2, c.position.z + c.size.z / 2};
+                pickupTimers.erase(pickupTimers.begin() + p.timerIndex);
             }
         }
 
         // just for debugging, can be commented out
-        for(BoundingBox& bb : boxes) {
+        for (BoundingBox &bb : boxes)
+        {
             DrawBoundingBox(bb, GOLD);
         }
 
@@ -573,6 +590,9 @@ int main()
         DrawBoundingBox(space1_bBox, WHITE);
         DrawModel(space2, space2_pos, space2_scale, WHITE);
         DrawBoundingBox(space2_bBox, WHITE);
+
+        // Draw Enemies
+        testEnemy.draw();
 
         // Draw Barbarian
         // DrawModel(barbarian, barbarian_pos, 1.0f, WHITE);
