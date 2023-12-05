@@ -51,11 +51,18 @@ void raymond(bool enabled, vector<Cube>& cubes, vector<Sphere>& spheres, vector<
     box2.position.z += 5;
     box2.position.x -= 4;
     box2.color = DARKGREEN;
+
+    //SPHERES - MEAGAN
+    Sphere sphere1;
+    sphere1.position = Vector3 {origin.x + 1, origin.y + 2, origin.z - 4};
+    sphere1.radius = 1.5;
+    sphere1.color = PINK; 
     
     cubes.push_back(wall1);
     cubes.push_back(wall2);
     cubes.push_back(wall3);
     cubes.push_back(box1);
     cubes.push_back(box2);
+    spheres.push_back(sphere1);
     planes.push_back(floor);
 }

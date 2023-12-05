@@ -465,11 +465,11 @@ int main()
                             hitACube = true;
                         }
                         else if (i < (cubes.size() + spheres.size())){
-                            hitLocation = spheres.at(i).position;
+                            hitLocation = spheres.at(i - cubes.size()).position;
                             hitASphere = true;
                         }
                         else if (i < (cubes.size() + spheres.size() + planes.size())){
-                            hitLocation = planes.at(i).position;
+                            hitLocation = planes.at(i - (cubes.size() + spheres.size())).position;
                             hitAPlane = true;
                         }
                         
@@ -619,18 +619,40 @@ int main()
                 }
             }
             else {
-                    c.Draw();
+                c.Draw();
             }
         }
 
         for (Sphere &s : spheres)
         {
-            s.Draw();
+            if (hitASphere){
+                if (s.position.x == hitLocation.x && s.position.y == hitLocation.y && s.position.z == hitLocation.z){
+                    s.color = DARKPURPLE;
+                    s.Draw();
+                }
+                else {
+                    s.Draw();
+                }
+            }
+            else {
+                s.Draw();
+            }
         }
 
         for (Plane &p : planes)
         {
-            p.Draw();
+            if (hitAPlane){
+                if (p.position.x == hitLocation.x && p.position.y == hitLocation.y && p.position.z == hitLocation.z){
+                    p.color = DARKPURPLE;
+                    p.Draw();
+                }
+                else {
+                    p.Draw();
+                }
+            }
+            else {
+                    p.Draw();
+            }
         }
 
         for (Cube &c : pickups)
