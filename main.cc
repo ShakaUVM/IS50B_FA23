@@ -67,6 +67,8 @@ int main()
     Vector3 mainChar_center = mainChar_orig;
     float mainChar_speed = 0.25;
     bool hitSomething = false;
+    bool hitModel = false;
+
 
     // Faux State Machine
     bool onFloor = true;
@@ -197,6 +199,13 @@ int main()
     camera.projection = CAMERA_PERSPECTIVE;                                                                         // Camera projection type
 
     int cameraMode = CAMERA_THIRD_PERSON;
+
+    // BEGIN MOUSE DETECTION
+    Ray ray = { 0 };
+    RayCollision clickedSomething = { 0 };
+    bool interactable = false;
+    // END MOUSE DETECTION
+
     /*
     // Begin Skybox; Load skybox model - Bruce Xiong
     Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
@@ -284,6 +293,18 @@ int main()
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         hitSomething = false;
+        hitModel = false;
+
+        if (IsCursorHidden()) UpdateCamera(&camera, cameraMode);
+
+        // Toggle camera controls
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+        {
+            if (IsCursorHidden()) EnableCursor();
+            else DisableCursor();
+        }
+
+    
 
         //xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
 
@@ -368,38 +389,65 @@ int main()
         // Jumping for Main Character
         // Very Basic
         // Only works for the ground level and actually lets you stay in flight if you hold SPACE
-        if (IsKeyPressed(KEY_SPACE))
-        {
-            mainChar_center.y += 1.5;
-        }
-        if (IsKeyReleased(KEY_SPACE))
-        {
-            while (mainChar_center.y > mainChar_radius)
-            {
-                mainChar_center.y -= 0.10;
-                hitPlatform = CheckCollisionBoxSphere(platform_bBox, mainChar_center, mainChar_radius);
-                if (hitPlatform)
-                {
-                    mainChar_center.y = (platformOrigin.y + platformThickness / 2.0f + mainChar_radius);
-                    break;
-                }
-            }
-        }
+        // if (IsKeyPressed(KEY_SPACE))
+        // {
+        //     mainChar_center.y += 1.5;
+        // }
+        // if (IsKeyReleased(KEY_SPACE))
+        // {
+        //     while (mainChar_center.y > mainChar_radius)
+        //     {
+        //         mainChar_center.y -= 0.10;
+        //         hitPlatform = CheckCollisionBoxSphere(platform_bBox, mainChar_center, mainChar_radius);
+        //         if (hitPlatform)
+        //         {
+        //             mainChar_center.y = (platformOrigin.y + platformThickness / 2.0f + mainChar_radius);
+        //             break;
+        //         }
+        //     }
+        // }
 
-        // Check to see if the player runs into space1
-        for (size_t i = 0; i < modelBoxes.size(); i++)
+        // BEGIN COLLISION TESTING
+        for (size_t i = 0; i < boxes.size(); i++)
         {
 
-            bool hitTemp = CheckCollisionBoxSphere(modelBoxes.at(i), mainChar_center, mainChar_radius);
+            bool hitTemp = CheckCollisionBoxSphere(boxes.at(i), mainChar_center, mainChar_radius);
             if (hitTemp)
             {
                 hitSomething = true;
             }
         }
+
+        // SHOOT A RAY FROM THE MOUSE
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            if (!clickedSomething.hit)
+            {
+                ray = GetMouseRay(GetMousePosition(), camera);
+
+                // Check collision between ray and box
+                for (size_t i = 0; i < boxes.size(); i++) {
+
+                    RayCollision clickTemp = GetRayCollisionBox(ray, boxes.at(i));
+                    if (clickTemp.hit)
+                    {
+                        clickedSomething = clickTemp;
+                    }
+                }
+            }
+            else clickedSomething.hit = false;
+        }
+
         if (hitSomething)
         {
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
         }
+        
+        if (clickedSomething.hit)
+        {
+            DrawText("YOU CLICKED SOMETHING", 500, 50, 30, BLACK);
+        }
+        // END COLLISION TESTING
 
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
@@ -412,10 +460,10 @@ int main()
         //const int MOVESPEED = 1;
         // Update camera computes movement internally depending on the camera mode
         // Some default standard keyboard/mouse inputs are hardcoded to simplify use
-        // For advance camera controls, it's reecommended to compute camera movement manually
+        // For advance camera controls, it's reecommfended to compute camera movement manually
         //if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
         //
-        UpdateCamera(&camera, cameraMode); // Update camera
+        //UpdateCamera(&camera, cameraMode); // Update camera
         boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
         boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
 
@@ -499,12 +547,14 @@ int main()
                 boxes.push_back(temp);
                 count++;
             }
+            
             for(size_t i = 0; i < pickups.size(); i++) {
                 pickups.at(i).boundingBoxIndex = count;
                 BoundingBox temp = {(Vector3){pickups.at(i).position.x - pickups.at(i).size.x/2, pickups.at(i).position.y - pickups.at(i).size.y/2, pickups.at(i).position.z - pickups.at(i).size.z/2},(Vector3){pickups.at(i).position.x + pickups.at(i).size.x/2, pickups.at(i).position.y + pickups.at(i).size.y/2, pickups.at(i).position.z + pickups.at(i).size.z/2}};
                 boxes.push_back(temp);
                 count++;
             }
+            
         }
         
         for(Cube& c : cubes) {
@@ -581,9 +631,18 @@ int main()
         DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, BEIGE);
 
         // Draw Platforms
-        DrawCube(platformOrigin, platformWidth, platformThickness, platformWidth, DARKGREEN);
-        DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
-        DrawBoundingBox(platform_bBox, WHITE);
+        if (clickedSomething.hit) {
+            DrawCube(platformOrigin, platformWidth, platformThickness, platformWidth, PINK);
+            DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
+            DrawBoundingBox(platform_bBox, WHITE);
+        }
+        else {
+            DrawCube(platformOrigin, platformWidth, platformThickness, platformWidth, DARKGREEN);
+            DrawCubeWires(platformOrigin, platformWidth, platformThickness, platformWidth, WHITE);
+            DrawBoundingBox(platform_bBox, WHITE);
+        }
+
+        
 
         // Draw some cubes around
         /*
