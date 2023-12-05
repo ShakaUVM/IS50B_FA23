@@ -49,6 +49,13 @@ int main()
     vector<Vector3> cubeLocations;
     vector<Vector3> sphereLocations;
     vector<Vector3> planeLocations;
+    bool hitACube = false;
+    bool hitASphere  = false;
+    bool hitAPlane = false;
+    BoundingBox hitBoundingBox;
+    Vector3 hitLocation = {99, 99, 99}; // Set to something ridiculous for debugging
+
+
 
     int pickupsCollected = 0;
 
@@ -61,8 +68,7 @@ int main()
     pickups.push_back(pickupTest);
     // This vector contains all of the bounding boxes for all objects in the level, if you create an object post first frame, you must create these yourself. Be sure not to do it in a loop, because they persist.
     vector<BoundingBox> boxes;
-    BoundingBox hitBoundingBox;
-    Vector3 hitLocation = {99, 99, 99};
+
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     int MONITOR = GetMonitorCount() == 3 ? 2 : 0;
@@ -456,12 +462,15 @@ int main()
                     {
                         if (i < cubes.size()){
                             hitLocation = cubes.at(i).position;
+                            hitACube = true;
                         }
                         else if (i < (cubes.size() + spheres.size())){
                             hitLocation = spheres.at(i).position;
+                            hitASphere = true;
                         }
                         else if (i < (cubes.size() + spheres.size() + planes.size())){
                             hitLocation = planes.at(i).position;
+                            hitAPlane = true;
                         }
                         
                         hitBoundingBox = boxes.at(i);
@@ -600,11 +609,17 @@ int main()
 
         for (Cube &c : cubes)
         {
-            if (c.position.x == hitLocation.x && c.position.y == hitLocation.y && c.position.z == hitLocation.z){
-                c.Draw();
+            if (hitACube){
+                if (c.position.x == hitLocation.x && c.position.y == hitLocation.y && c.position.z == hitLocation.z){
+                    c.color = DARKPURPLE;
+                    c.Draw();
+                }
+                else {
+                    c.Draw();
+                }
             }
             else {
-                c.Draw();
+                    c.Draw();
             }
         }
 

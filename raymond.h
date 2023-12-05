@@ -22,35 +22,35 @@ void raymond(bool enabled, vector<Cube>& cubes, vector<Sphere>& spheres, vector<
     float temp = wall1.size.x;
     wall1.size.x = wall1.size.z;
     wall1.size.z = temp;
-    wall1.color = GREEN;
+    wall1.color = GRAY;
     
     wall2.position = origin;
     wall2.position.z += wallOffset.z;
-    wall2.position.x += .5f;
+    //wall2.position.x += .5f;
     wall2.size = wallScale;
-    wall2.color = RED;
+    wall2.color = BLACK;
     
     wall3.position = origin;
     wall3.position.z -= wallOffset.z;
-    wall3.position.x += .5f;
+    //wall3.position.x += .5f;
     wall3.size = wallScale;
-    wall3.color = BLUE;
+    wall3.color = DARKGRAY;
     
     //BOXES
     Cube box1, box2;
     box1.position = origin;
     box1.size = (Vector3) {2.5f, 2.5f, 2.5f};
-    box1.position.y -= (origin.y - (box1.size.y / 2.0f));
+    box1.position.y = box1.size.y;
     box1.position.z -= 2;
     box1.position.x += 5;
-    box1.color = GRAY;
+    box1.color = GREEN;
     
     box2.position = origin;
     box2.size = (Vector3) {1, 1, 1};
-    box2.position.y -= (origin.y - (box2.size.y / 2.0f));
+    box2.position.y = box2.size.y;
     box2.position.z += 5;
     box2.position.x -= 4;
-    box2.color = WHITE;
+    box2.color = DARKGREEN;
     
     cubes.push_back(wall1);
     cubes.push_back(wall2);
