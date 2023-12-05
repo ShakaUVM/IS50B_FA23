@@ -43,6 +43,13 @@ int main()
     // These cubes can be picked up, they will be used for testing. Eventually will be subbed out for models or something
     vector<Cube> pickups;
     vector<Pickup> pickupTimers;
+    
+    
+    // MEAGAN - TESTING TO SEE IF THIS HELPS WITH SPECIFIC COLLISION
+    vector<Vector3> cubeLocations;
+    vector<Vector3> sphereLocations;
+    vector<Vector3> planeLocations;
+
     int pickupsCollected = 0;
 
     // Temporary code for testing a pickup system. I'm not sure how we are going to actually implement the pickups, if we will have an inventory or just use a state machine or what
@@ -54,6 +61,8 @@ int main()
     pickups.push_back(pickupTest);
     // This vector contains all of the bounding boxes for all objects in the level, if you create an object post first frame, you must create these yourself. Be sure not to do it in a loop, because they persist.
     vector<BoundingBox> boxes;
+    BoundingBox hitBoundingBox;
+    Vector3 hitLocation = {99, 99, 99};
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera first person");
     int MONITOR = GetMonitorCount() == 3 ? 2 : 0;
@@ -150,7 +159,7 @@ int main()
                             true,
                             true);
 
-    // SPACE BITS
+    // SPACE BITS - MEAGAN
     // Space Model 1 (space1)
     float space1_scale = 0.5;
     Model space1 = models.at(0);           // Voss
@@ -297,7 +306,7 @@ int main()
 
     // BEGIN MAIN LOOP
     BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3){camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
-    boxes.push_back(cameraBB);
+    //boxes.push_back(cameraBB);
     // Main game loop
 
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -419,13 +428,15 @@ int main()
         // }
 
         // BEGIN COLLISION TESTING
+        if (boxesCreated){
         for (size_t i = 0; i < boxes.size(); i++)
-        {
-
-            bool hitTemp = CheckCollisionBoxSphere(boxes.at(i), mainChar_center, mainChar_radius);
-            if (hitTemp)
             {
-                hitSomething = true;
+
+                bool hitTemp = CheckCollisionBoxSphere(boxes.at(i), mainChar_center, mainChar_radius);
+                if (hitTemp)
+                {
+                    hitSomething = true;
+                }
             }
         }
 
@@ -443,6 +454,17 @@ int main()
                     RayCollision clickTemp = GetRayCollisionBox(ray, boxes.at(i));
                     if (clickTemp.hit)
                     {
+                        if (i < cubes.size()){
+                            hitLocation = cubes.at(i).position;
+                        }
+                        else if (i < (cubes.size() + spheres.size())){
+                            hitLocation = spheres.at(i).position;
+                        }
+                        else if (i < (cubes.size() + spheres.size() + planes.size())){
+                            hitLocation = planes.at(i).position;
+                        }
+                        
+                        hitBoundingBox = boxes.at(i);
                         clickedSomething = clickTemp;
                     }
                 }
@@ -454,11 +476,15 @@ int main()
         if (hitSomething)
         {
             DrawText("YOU HIT SOMETHING", 500, 50, 30, BLACK);
+            DrawText(TextFormat("x-Hit: %i", hitLocation.x), 500, 50, 30, BLACK);
         }
 
         if (clickedSomething.hit)
         {
             DrawText("YOU CLICKED SOMETHING", 500, 50, 30, BLACK);
+            DrawText(TextFormat("x-Hit: %.2f", hitLocation.x), 600, 70, 30, BLACK);
+            DrawText(TextFormat("y-Hit: %.2f", hitLocation.y), 700, 90, 30, BLACK);
+            DrawText(TextFormat("z-Hit: %.2f", hitLocation.z), 800, 110, 30, BLACK);
         }
         // END COLLISION TESTING
 
@@ -477,8 +503,10 @@ int main()
         // if(boxesCreated) CheckCollisionsSean(&camera/*, proposedMove*/, boxes);
         //
         // UpdateCamera(&camera, cameraMode); // Update camera
-        boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
-        boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
+        //boxes.at(0).min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
+        //boxes.at(0).max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
+        cameraBB.min = (Vector3){camera.position.x - 1, camera.position.y - 1, camera.position.z - 1};
+        cameraBB.max = (Vector3){camera.position.x + 1, camera.position.y + 1, camera.position.z + 1};
 
         // if(IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) { proposedMove.y += MOVESPEED;}
         // if(IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) { proposedMove.x -= MOVESPEED;}
@@ -537,6 +565,7 @@ int main()
             int count = boxes.size();
             for (size_t i = 0; i < cubes.size(); i++)
             {
+                cubeLocations.push_back(cubes.at(i).position); // MEG
                 cubes.at(i).boundingBoxIndex = count;
                 BoundingBox temp = {(Vector3){cubes.at(i).position.x - cubes.at(i).size.x / 2, cubes.at(i).position.y - cubes.at(i).size.y / 2, cubes.at(i).position.z - cubes.at(i).size.z / 2}, (Vector3){cubes.at(i).position.x + cubes.at(i).size.x / 2, cubes.at(i).position.y + cubes.at(i).size.y / 2, cubes.at(i).position.z + cubes.at(i).size.z / 2}};
                 boxes.push_back(temp);
@@ -545,6 +574,7 @@ int main()
             cout << boxes.size() << endl;
             for (size_t i = 0; i < spheres.size(); i++)
             {
+                sphereLocations.push_back(spheres.at(i).position); // MEG
                 spheres.at(i).boundingBoxIndex = count;
                 BoundingBox temp = {(Vector3){spheres.at(i).position.x - spheres.at(i).radius / 2, spheres.at(i).position.y - spheres.at(i).radius / 2, spheres.at(i).position.z - spheres.at(i).radius / 2}, (Vector3){spheres.at(i).position.x + spheres.at(i).radius / 2, spheres.at(i).position.y + spheres.at(i).radius / 2, spheres.at(i).position.z + spheres.at(i).radius / 2}};
                 boxes.push_back(temp);
@@ -552,6 +582,7 @@ int main()
             }
             for (size_t i = 0; i < planes.size(); i++)
             {
+                planeLocations.push_back(planes.at(i).position); // MEG
                 planes.at(i).boundingBoxIndex = count;
                 BoundingBox temp = {(Vector3){planes.at(i).position.x - planes.at(i).size.x / 2, planes.at(i).position.y - 1, planes.at(i).position.z - planes.at(i).size.y / 2}, (Vector3){planes.at(i).position.x + planes.at(i).size.x / 2, planes.at(i).position.y, planes.at(i).position.z + planes.at(i).size.y / 2}};
                 boxes.push_back(temp);
@@ -569,7 +600,12 @@ int main()
 
         for (Cube &c : cubes)
         {
-            c.Draw();
+            if (c.position.x == hitLocation.x && c.position.y == hitLocation.y && c.position.z == hitLocation.z){
+                c.Draw();
+            }
+            else {
+                c.Draw();
+            }
         }
 
         for (Sphere &s : spheres)

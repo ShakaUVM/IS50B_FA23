@@ -40,14 +40,14 @@ void raymond(bool enabled, vector<Cube>& cubes, vector<Sphere>& spheres, vector<
     Cube box1, box2;
     box1.position = origin;
     box1.size = (Vector3) {2.5f, 2.5f, 2.5f};
-    box1.position.y -= origin.y - (box1.size.y / 2);
+    box1.position.y -= (origin.y - (box1.size.y / 2.0f));
     box1.position.z -= 2;
     box1.position.x += 5;
     box1.color = GRAY;
     
     box2.position = origin;
     box2.size = (Vector3) {1, 1, 1};
-    box2.position.y -= origin.y - (box2.size.y / 2);
+    box2.position.y -= (origin.y - (box2.size.y / 2.0f));
     box2.position.z += 5;
     box2.position.x -= 4;
     box2.color = WHITE;
