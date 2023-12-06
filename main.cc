@@ -231,7 +231,7 @@ int main()
     bool interactable = false;
     // END MOUSE DETECTION
 
-    /*
+    
     // Begin Skybox; Load skybox model - Bruce Xiong
     Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
     Model skybox = LoadModelFromMesh(cube);
@@ -281,7 +281,7 @@ int main()
         UnloadImage(img);
     }
     //End of Skybox - Bruce Xiong
-    */
+    
     // stolen from a github repo. doesn't currently work
     // setup initial camera data
     /*
@@ -332,7 +332,7 @@ int main()
                 DisableCursor();
         }
 
-        // xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
+        xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
 
         UpdateMusicStream(bgMusic);
         // rlTPCameraBeginMode3D(&orbitCam);
@@ -553,12 +553,12 @@ int main()
         BeginMode3D(camera);
 
         // For the skybox; We are inside the cube, we need to disable backface culling! - Bruce Xiong
-        // rlDisableBackfaceCulling();
-        // rlDisableDepthMask();
-        // DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
-        // rlEnableBackfaceCulling();
-        // rlEnableDepthMask();
-        // DrawGrid(10, 1.0f);
+        rlDisableBackfaceCulling();
+        rlDisableDepthMask();
+        DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
+        rlEnableBackfaceCulling();
+        rlEnableDepthMask();
+        //DrawGrid(10, 1.0f);
         // End of skybox - Bruce Xiong
 
         xiong(xiong_enabled);
@@ -742,14 +742,14 @@ int main()
 
         EndMode3D();
         // rlTPCameraEndMode3D();
-        /*
+        
         //Skybox code - Bruce Xiong
-        //DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);
+        DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);
         if (useHDR) DrawText(TextFormat("Panorama image from hdrihaven.com: %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
         else DrawText(TextFormat(": %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
         DrawFPS(10, 10);
         //Skybox code - Bruce Xiong
-        */
+        
         // Draw info boxes (HUD)
         DrawRectangle(5, 5, 330, 100, Fade(BLUE, 0.5f));
         DrawRectangleLines(5, 5, 330, 100, BLACK);
@@ -761,11 +761,11 @@ int main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    /*
+    
     UnloadShader(skybox.materials[0].shader); //Skybox code - Bruce Xiong
     UnloadTexture(skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
     UnloadModel(skybox); // Unload skybox model
-    */
+    
 
     CloseWindow(); // Close window and OpenGL context
     CloseAudioDevice();
