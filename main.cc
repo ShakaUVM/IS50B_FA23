@@ -225,7 +225,7 @@ int main()
     camera.fovy = 60.0f;                                                                                            // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;                                                                         // Camera projection type
 
-    int cameraMode = CAMERA_THIRD_PERSON;
+    int cameraMode = CAMERA_FIRST_PERSON; //Original code: CAMERA_THIRD_PERSON - Bruce Xiong
 
     // BEGIN MOUSE DETECTION
     Ray ray = {0};
@@ -235,53 +235,53 @@ int main()
 
     
     // Begin Skybox; Load skybox model - Bruce Xiong
-    // Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
-    // Model skybox = LoadModelFromMesh(cube);
-    // bool useHDR = true;
+    Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
+    Model skybox = LoadModelFromMesh(cube);
+    bool useHDR = true;
 
-    // // Load skybox shader and set required locations
-    // // NOTE: Some locations are automatically set at shader loading
-    // skybox.materials[0].shader = LoadShader(TextFormat("resources/shaders/glsl%i/skybox.vs", GLSL_VERSION),
-    //                                         TextFormat("resources/shaders/glsl%i/skybox.fs", GLSL_VERSION));
+    // Load skybox shader and set required locations
+    // NOTE: Some locations are automatically set at shader loading
+    skybox.materials[0].shader = LoadShader(TextFormat("resources/shaders/glsl%i/skybox.vs", GLSL_VERSION),
+                                            TextFormat("resources/shaders/glsl%i/skybox.fs", GLSL_VERSION));
 
-    // int bob = MATERIAL_MAP_CUBEMAP;
-    // int HDR_boi = useHDR ? 1 : 0;
-    // SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "environmentMap"), &bob, SHADER_UNIFORM_INT);
-    // SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "doGamma"), &HDR_boi, SHADER_UNIFORM_INT);
-    // SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "vflipped"), &HDR_boi, SHADER_UNIFORM_INT);
+    int bob = MATERIAL_MAP_CUBEMAP;
+    int HDR_boi = useHDR ? 1 : 0;
+    SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "environmentMap"), &bob, SHADER_UNIFORM_INT);
+    SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "doGamma"), &HDR_boi, SHADER_UNIFORM_INT);
+    SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "vflipped"), &HDR_boi, SHADER_UNIFORM_INT);
 
-    // // Load cubemap shader and setup required shader locations
-    // Shader shdrCubemap = LoadShader(TextFormat("resources/shaders/glsl%i/cubemap.vs", GLSL_VERSION),
-    //                                 TextFormat("resources/shaders/glsl%i/cubemap.fs", GLSL_VERSION));
+    //Load cubemap shader and setup required shader locations
+    Shader shdrCubemap = LoadShader(TextFormat("resources/shaders/glsl%i/cubemap.vs", GLSL_VERSION),
+                                     TextFormat("resources/shaders/glsl%i/cubemap.fs", GLSL_VERSION));
 
-    // int zerp = 0;
-    // SetShaderValue(shdrCubemap, GetShaderLocation(shdrCubemap, "equirectangularMap"), &zerp, SHADER_UNIFORM_INT);
+    int zerp = 0;
+    SetShaderValue(shdrCubemap, GetShaderLocation(shdrCubemap, "equirectangularMap"), &zerp, SHADER_UNIFORM_INT);
 
-    // char skyboxFileName[256] = { 0 };
+    char skyboxFileName[256] = { 0 };
 
-    // Texture2D panorama;
-    // if (useHDR)
-    // {
-    //     //TextCopy(skyboxFileName, "resources/dresden_square_2k.hdr"); //the original sample code
-    //     TextCopy(skyboxFileName, "resources/space_skybox.hdr");
+    Texture2D panorama;
+    if (useHDR)
+    {
+        //TextCopy(skyboxFileName, "resources/dresden_square_2k.hdr"); //the original sample code
+        TextCopy(skyboxFileName, "resources/space_skybox.hdr");
 
-    //     // Load HDR panorama (sphere) texture
-    //     panorama = LoadTexture(skyboxFileName);
+        //Load HDR panorama (sphere) texture
+        panorama = LoadTexture(skyboxFileName);
 
-    //     // Generate cubemap (texture with 6 quads-cube-mapping) from panorama HDR texture
-    //     // NOTE 1: New texture is generated rendering to texture, shader calculates the sphere->cube coordinates mapping
-    //     // NOTE 2: It seems on some Android devices WebGL, fbo does not properly support a FLOAT-based attachment,
-    //     // despite texture can be successfully created.. so using PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 instead of PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
-    //     skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = GenTextureCubemap(shdrCubemap, panorama, 1024, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+        // Generate cubemap (texture with 6 quads-cube-mapping) from panorama HDR texture
+        // NOTE 1: New texture is generated rendering to texture, shader calculates the sphere->cube coordinates mapping
+        // NOTE 2: It seems on some Android devices WebGL, fbo does not properly support a FLOAT-based attachment,
+        // despite texture can be successfully created.. so using PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 instead of PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
+        skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = GenTextureCubemap(shdrCubemap, panorama, 1024, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
 
-    //     //UnloadTexture(panorama);    // Texture not required anymore, cubemap already generated
-    // }
-    // else
-    // {
-    //     Image img = LoadImage("resources/skybox.png");
-    //     skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT); // CUBEMAP_LAYOUT_PANORAMA
-    //     UnloadImage(img);
-    // }
+        UnloadTexture(panorama);    // Texture not required anymore, cubemap already generated
+    }
+    else
+    {
+        Image img = LoadImage("resources/skybox.png");
+        skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT); // CUBEMAP_LAYOUT_PANORAMA
+        UnloadImage(img);
+    }
     //End of Skybox - Bruce Xiong
     
     // stolen from a github repo. doesn't currently work
@@ -338,7 +338,7 @@ int main()
                 DisableCursor();
         }
 
-        //xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
+        xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
 
         UpdateMusicStream(bgMusic);
         // rlTPCameraBeginMode3D(&orbitCam);
@@ -559,11 +559,11 @@ int main()
         BeginMode3D(camera);
 
         // For the skybox; We are inside the cube, we need to disable backface culling! - Bruce Xiong
-        // rlDisableBackfaceCulling();
-        // rlDisableDepthMask();
-        // DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
-        // rlEnableBackfaceCulling();
-        // rlEnableDepthMask();
+        rlDisableBackfaceCulling();
+        rlDisableDepthMask();
+        DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
+        rlEnableBackfaceCulling();
+        rlEnableDepthMask();
         //DrawGrid(10, 1.0f);
         // End of skybox - Bruce Xiong
 
@@ -781,10 +781,10 @@ int main()
         // rlTPCameraEndMode3D();
         
         //Skybox code - Bruce Xiong
-        // DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);
-        // if (useHDR) DrawText(TextFormat("Panorama image from hdrihaven.com: %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
-        // else DrawText(TextFormat(": %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
-        // DrawFPS(10, 10);
+        DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);
+        if (useHDR) DrawText(TextFormat("Panorama image from hdrihaven.com: %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
+        else DrawText(TextFormat(": %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
+        DrawFPS(30, 30);
         //Skybox code - Bruce Xiong
         
         
@@ -816,9 +816,9 @@ int main()
     // De-Initialization
     //--------------------------------------------------------------------------------------
     
-    // UnloadShader(skybox.materials[0].shader); //Skybox code - Bruce Xiong
-    // UnloadTexture(skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
-    // UnloadModel(skybox); // Unload skybox model
+    UnloadShader(skybox.materials[0].shader); //Skybox code - Bruce Xiong
+    UnloadTexture(skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
+    UnloadModel(skybox); // Unload skybox model
     
 
     CloseWindow(); // Close window and OpenGL context
