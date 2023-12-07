@@ -52,6 +52,7 @@ int main()
     bool hitACube = false;
     bool hitASphere  = false;
     bool hitAPlane = false;
+    bool allCubesActivated = false;
     BoundingBox hitBoundingBox;
     Vector3 hitLocation = {99, 99, 99}; // Set to something ridiculous for debugging
 
@@ -75,6 +76,7 @@ int main()
 
     SetWindowMonitor(MONITOR);
     SetWindowSize(GetMonitorWidth(MONITOR), GetMonitorHeight(MONITOR));
+    
 
     // BEGIN MAIN CHARACTER SET UP - MEG
     float mainChar_radius = 0.25;
@@ -233,53 +235,53 @@ int main()
 
     
     // Begin Skybox; Load skybox model - Bruce Xiong
-    Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Model skybox = LoadModelFromMesh(cube);
-    bool useHDR = true;
+    // Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
+    // Model skybox = LoadModelFromMesh(cube);
+    // bool useHDR = true;
 
-    // Load skybox shader and set required locations
-    // NOTE: Some locations are automatically set at shader loading
-    skybox.materials[0].shader = LoadShader(TextFormat("resources/shaders/glsl%i/skybox.vs", GLSL_VERSION),
-                                            TextFormat("resources/shaders/glsl%i/skybox.fs", GLSL_VERSION));
+    // // Load skybox shader and set required locations
+    // // NOTE: Some locations are automatically set at shader loading
+    // skybox.materials[0].shader = LoadShader(TextFormat("resources/shaders/glsl%i/skybox.vs", GLSL_VERSION),
+    //                                         TextFormat("resources/shaders/glsl%i/skybox.fs", GLSL_VERSION));
 
-    int bob = MATERIAL_MAP_CUBEMAP;
-    int HDR_boi = useHDR ? 1 : 0;
-    SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "environmentMap"), &bob, SHADER_UNIFORM_INT);
-    SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "doGamma"), &HDR_boi, SHADER_UNIFORM_INT);
-    SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "vflipped"), &HDR_boi, SHADER_UNIFORM_INT);
+    // int bob = MATERIAL_MAP_CUBEMAP;
+    // int HDR_boi = useHDR ? 1 : 0;
+    // SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "environmentMap"), &bob, SHADER_UNIFORM_INT);
+    // SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "doGamma"), &HDR_boi, SHADER_UNIFORM_INT);
+    // SetShaderValue(skybox.materials[0].shader, GetShaderLocation(skybox.materials[0].shader, "vflipped"), &HDR_boi, SHADER_UNIFORM_INT);
 
-    // Load cubemap shader and setup required shader locations
-    Shader shdrCubemap = LoadShader(TextFormat("resources/shaders/glsl%i/cubemap.vs", GLSL_VERSION),
-                                    TextFormat("resources/shaders/glsl%i/cubemap.fs", GLSL_VERSION));
+    // // Load cubemap shader and setup required shader locations
+    // Shader shdrCubemap = LoadShader(TextFormat("resources/shaders/glsl%i/cubemap.vs", GLSL_VERSION),
+    //                                 TextFormat("resources/shaders/glsl%i/cubemap.fs", GLSL_VERSION));
 
-    int zerp = 0;
-    SetShaderValue(shdrCubemap, GetShaderLocation(shdrCubemap, "equirectangularMap"), &zerp, SHADER_UNIFORM_INT);
+    // int zerp = 0;
+    // SetShaderValue(shdrCubemap, GetShaderLocation(shdrCubemap, "equirectangularMap"), &zerp, SHADER_UNIFORM_INT);
 
-    char skyboxFileName[256] = { 0 };
+    // char skyboxFileName[256] = { 0 };
 
-    Texture2D panorama;
-    if (useHDR)
-    {
-        //TextCopy(skyboxFileName, "resources/dresden_square_2k.hdr"); //the original sample code
-        TextCopy(skyboxFileName, "resources/space_skybox.hdr");
+    // Texture2D panorama;
+    // if (useHDR)
+    // {
+    //     //TextCopy(skyboxFileName, "resources/dresden_square_2k.hdr"); //the original sample code
+    //     TextCopy(skyboxFileName, "resources/space_skybox.hdr");
 
-        // Load HDR panorama (sphere) texture
-        panorama = LoadTexture(skyboxFileName);
+    //     // Load HDR panorama (sphere) texture
+    //     panorama = LoadTexture(skyboxFileName);
 
-        // Generate cubemap (texture with 6 quads-cube-mapping) from panorama HDR texture
-        // NOTE 1: New texture is generated rendering to texture, shader calculates the sphere->cube coordinates mapping
-        // NOTE 2: It seems on some Android devices WebGL, fbo does not properly support a FLOAT-based attachment,
-        // despite texture can be successfully created.. so using PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 instead of PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
-        skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = GenTextureCubemap(shdrCubemap, panorama, 1024, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+    //     // Generate cubemap (texture with 6 quads-cube-mapping) from panorama HDR texture
+    //     // NOTE 1: New texture is generated rendering to texture, shader calculates the sphere->cube coordinates mapping
+    //     // NOTE 2: It seems on some Android devices WebGL, fbo does not properly support a FLOAT-based attachment,
+    //     // despite texture can be successfully created.. so using PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 instead of PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
+    //     skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = GenTextureCubemap(shdrCubemap, panorama, 1024, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
 
-        //UnloadTexture(panorama);    // Texture not required anymore, cubemap already generated
-    }
-    else
-    {
-        Image img = LoadImage("resources/skybox.png");
-        skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT); // CUBEMAP_LAYOUT_PANORAMA
-        UnloadImage(img);
-    }
+    //     //UnloadTexture(panorama);    // Texture not required anymore, cubemap already generated
+    // }
+    // else
+    // {
+    //     Image img = LoadImage("resources/skybox.png");
+    //     skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT); // CUBEMAP_LAYOUT_PANORAMA
+    //     UnloadImage(img);
+    // }
     //End of Skybox - Bruce Xiong
     
     // stolen from a github repo. doesn't currently work
@@ -310,11 +312,15 @@ int main()
     // Only create the bounding boxes once on the start of the game, if you add more boxes after the first frame you must add the bounding boxes yourself.
     bool boxesCreated = false;
 
-    // BEGIN MAIN LOOP
     BoundingBox cameraBB = {(Vector3){camera.position.x - .5f, camera.position.y - .5f, camera.position.z - .5f}, (Vector3){camera.position.x + .5f, camera.position.y + .5f, camera.position.z + .5f}};
     //boxes.push_back(cameraBB);
-    // Main game loop
 
+
+    bool raymond_enabled = true;
+    raymond(raymond_enabled, cubes, spheres, planes);
+
+
+// BEGIN MAIN GAME LOOP 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         hitSomething = false;
@@ -332,7 +338,7 @@ int main()
                 DisableCursor();
         }
 
-        xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
+        //xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
 
         UpdateMusicStream(bgMusic);
         // rlTPCameraBeginMode3D(&orbitCam);
@@ -533,7 +539,7 @@ int main()
         bool eggert_enabled = true;
         bool voss_enabled = true; // voss
         const bool kerney_enabled = true;
-        bool raymond_enabled = true;
+        
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
@@ -553,11 +559,11 @@ int main()
         BeginMode3D(camera);
 
         // For the skybox; We are inside the cube, we need to disable backface culling! - Bruce Xiong
-        rlDisableBackfaceCulling();
-        rlDisableDepthMask();
-        DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
-        rlEnableBackfaceCulling();
-        rlEnableDepthMask();
+        // rlDisableBackfaceCulling();
+        // rlDisableDepthMask();
+        // DrawModel(skybox, (Vector3){0, 0, 0}, 1.0f, WHITE);
+        // rlEnableBackfaceCulling();
+        // rlEnableDepthMask();
         //DrawGrid(10, 1.0f);
         // End of skybox - Bruce Xiong
 
@@ -565,7 +571,7 @@ int main()
         eggert(eggert_enabled);
         voss(voss_enabled);
         kerney(kerney_enabled);
-        raymond(raymond_enabled, cubes, spheres, planes);
+        
 
         // This will create bounding boxes for every object added to the cubes, spheres, and planes vectors in the first frame. everything after the first frame, you gotta create your own bounding boxes and index them properly.
         if (!boxesCreated)
@@ -607,6 +613,9 @@ int main()
             }
         }
 
+
+
+
         for (Cube &c : cubes)
         {
             if (hitACube){
@@ -616,7 +625,7 @@ int main()
                 }
             }
             if (c.activated == true){
-                c.color = DARKPURPLE;
+                c.color = MAROON;
                 c.Draw();
             }
             else {
@@ -624,17 +633,33 @@ int main()
             }
 
         }
+        
+        allCubesActivated = true;
+        for (Cube &c : cubes) {
+            
+            if (c.activated == false) {
+                allCubesActivated = false;
+            }
+        }
 
         for (Sphere &s : spheres)
         {
-            if (hitASphere){
-                if (s.position.x == hitLocation.x && s.position.y == hitLocation.y && s.position.z == hitLocation.z){
-                    s.color = DARKPURPLE;
-                    s.Draw();
-                }
-                else {
-                    s.Draw();
-                }
+            // THIS CHECKS TO SEE IF YOU CLICKED A SPHERE, BUT WE'RE NOT USING THIS RIGHT NOW
+            // if (hitASphere){
+            //     if (s.position.x == hitLocation.x && s.position.y == hitLocation.y && s.position.z == hitLocation.z){
+            //         s.color = DARKGREEN;
+            //         s.Draw();
+            //     }
+            //     else {
+            //         s.Draw();
+            //     }
+            // }
+            // else {
+            //     s.Draw();
+            // }
+            if (allCubesActivated){
+                s.color = GOLD;
+                s.Draw();
             }
             else {
                 s.Draw();
@@ -643,17 +668,26 @@ int main()
 
         for (Plane &p : planes)
         {
-            if (hitAPlane){
-                if (p.position.x == hitLocation.x && p.position.y == hitLocation.y && p.position.z == hitLocation.z){
-                    p.color = DARKPURPLE;
-                    p.Draw();
-                }
-                else {
-                    p.Draw();
-                }
+            // THIS CHECKS TO SEE IF YOU CLICKED A PLANE, BUT WE'RE NOT USING THIS RIGHT NOW
+            // if (hitAPlane){
+            //     if (p.position.x == hitLocation.x && p.position.y == hitLocation.y && p.position.z == hitLocation.z){
+            //         p.color = BEIGE;
+            //         p.Draw();
+            //     }
+            //     else {
+            //         p.Draw();
+            //     }
+            // }
+            // else {
+            //         p.Draw();
+            // }
+
+            if (allCubesActivated){
+                p.color = BEIGE;
+                p.Draw();
             }
             else {
-                    p.Draw();
+                p.Draw();
             }
         }
 
@@ -684,6 +718,8 @@ int main()
             c.Draw();
         }
 
+
+
         for (Pickup p : pickupTimers)
         {
             if (p.canRespawn())
@@ -706,6 +742,7 @@ int main()
 
         // target point
         // DrawSphere(orbitCam.CameraPosition, 0.25f, RED);
+
 
         // Draw "character" sphere at the origin
         DrawSphere(mainChar_center, 0.25, MAROON);
@@ -744,16 +781,33 @@ int main()
         // rlTPCameraEndMode3D();
         
         //Skybox code - Bruce Xiong
-        DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);
-        if (useHDR) DrawText(TextFormat("Panorama image from hdrihaven.com: %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
-        else DrawText(TextFormat(": %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
-        DrawFPS(10, 10);
+        // DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);
+        // if (useHDR) DrawText(TextFormat("Panorama image from hdrihaven.com: %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
+        // else DrawText(TextFormat(": %s", GetFileName(skyboxFileName)), 10, GetScreenHeight() - 20, 10, BLACK);
+        // DrawFPS(10, 10);
         //Skybox code - Bruce Xiong
         
+        
         // Draw info boxes (HUD)
-        DrawRectangle(5, 5, 330, 100, Fade(BLUE, 0.5f));
-        DrawRectangleLines(5, 5, 330, 100, BLACK);
-        DrawText("Press 'K' to Laser", 15, 30, 10, WHITE);
+        DrawRectangle(5, 5, 330, 100, BLACK);
+        DrawRectangleLines(5, 5, 330, 100, WHITE);
+        DrawText("Press 'K' to Laser", 15, 30, 15, WHITE);
+
+
+        // Text for Activating a Room
+        int screenWidth = GetMonitorWidth(MONITOR);
+        int screenHeight = GetMonitorHeight(MONITOR);
+        int boxWidth = 550;
+        int boxHeight = 100;
+        
+        
+        if (allCubesActivated) {
+            // DrawText("Activated", 15, 40, 10, WHITE); // Debugging
+            DrawRectangle((screenWidth/2.0 - boxWidth/2.0), screenHeight - 200, boxWidth, boxHeight, BLACK);
+            DrawRectangleLines((screenWidth/2.0 - boxWidth/2.0), screenHeight - 200, boxWidth, boxHeight, WHITE);
+            DrawText("You Activated This Room!", (screenWidth/2.0 - boxWidth/2.0) + 5, screenHeight - 200 + 5, 25, WHITE);
+        }
+
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -762,9 +816,9 @@ int main()
     // De-Initialization
     //--------------------------------------------------------------------------------------
     
-    UnloadShader(skybox.materials[0].shader); //Skybox code - Bruce Xiong
-    UnloadTexture(skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
-    UnloadModel(skybox); // Unload skybox model
+    // UnloadShader(skybox.materials[0].shader); //Skybox code - Bruce Xiong
+    // UnloadTexture(skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
+    // UnloadModel(skybox); // Unload skybox model
     
 
     CloseWindow(); // Close window and OpenGL context
