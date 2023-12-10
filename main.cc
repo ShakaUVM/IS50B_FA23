@@ -218,7 +218,7 @@ int main()
 
     // Define the camera to look into our 3d world (position, target, up vector)
     Camera camera = {0};
-    camera.position = (Vector3){0.0f, 2.0f, 4.0f};                                                                  // Camera position
+    //camera.position = (Vector3){0.0f, 2.0f, 4.0f};                                                                  // Camera position
     camera.position = (Vector3){mainChar_center.x, mainChar_center.y + mainChar_radius * 2, mainChar_center.z + 2}; // Camera position
     camera.target = (Vector3){mainChar_center.x, mainChar_center.y, mainChar_center.z - 2};                         // Camera looking at point
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};                                                                        // Camera up vector (rotation towards target)
@@ -226,6 +226,9 @@ int main()
     camera.projection = CAMERA_PERSPECTIVE;                                                                         // Camera projection type
 
     int cameraMode = CAMERA_FIRST_PERSON; //Original code: CAMERA_THIRD_PERSON - Bruce Xiong
+
+    Vector3 cubePosition = { 0.0f, 0.5f, 25.0f }; //Xiong's cube
+    Vector3 cubeSize = { 1.0f, 1.0f, 1.0f }; //XIong's cube
 
     // BEGIN MOUSE DETECTION
     Ray ray = {0};
@@ -336,6 +339,20 @@ int main()
                 EnableCursor();
             else
                 DisableCursor();
+        }
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            if (!clickedSomething.hit)
+            {
+                ray = GetMouseRay(GetMousePosition(), camera);
+
+                // Check collision between ray and box
+                clickedSomething = GetRayCollisionBox(ray,
+                            (BoundingBox){(Vector3){ cubePosition.x - cubeSize.x/2, cubePosition.y - cubeSize.y/2, cubePosition.z - cubeSize.z/2 },
+                                          (Vector3){ cubePosition.x + cubeSize.x/2, cubePosition.y + cubeSize.y/2, cubePosition.z + cubeSize.z/2 }});
+            }
+            else clickedSomething.hit = false;
         }
 
         xiong_skybox(skybox, useHDR, shdrCubemap, skyboxFileName); //Skybox code - Bruce Xiong
@@ -571,7 +588,8 @@ int main()
         eggert(eggert_enabled);
         voss(voss_enabled);
         kerney(kerney_enabled);
-        
+
+        xiong_cube(xiong_enabled, cubePosition, cubeSize, ray, clickedSomething); //Xiong's cube
 
         // This will create bounding boxes for every object added to the cubes, spheres, and planes vectors in the first frame. everything after the first frame, you gotta create your own bounding boxes and index them properly.
         if (!boxesCreated)
@@ -779,6 +797,11 @@ int main()
 
         EndMode3D();
         // rlTPCameraEndMode3D();
+
+        //Sends a message if cube is clicked - Xiong
+        DrawText("Try clicking on the box with your mouse!", 240, 10, 20, DARKGRAY);
+        if (clickedSomething.hit) DrawText("BOX SELECTED", (screenWidth - MeasureText("BOX SELECTED", 30)) / 2, (int)(screenHeight * 0.1f), 30, GREEN);
+        DrawText("Right click mouse to toggle camera controls", 10, 430, 10, GRAY);
         
         //Skybox code - Bruce Xiong
         DrawTextureEx(panorama, (Vector2){ 0, 0 }, 0.0f, 0.5f, WHITE);

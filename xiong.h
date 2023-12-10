@@ -18,6 +18,24 @@ void xiong(bool enabled) {
     DrawSphereWires(Vector3{ 0.0f, 3.5f, 32.0f }, 2.0f, 10, 10, GOLD); 
 }
 
+void xiong_cube(bool enabled, Vector3 cubePosition, Vector3 cubeSize, Ray ray, RayCollision clickedSomething) {
+    if (clickedSomething.hit)
+                {
+                    DrawCube(cubePosition, cubeSize.x, cubeSize.y, cubeSize.z, RED);
+                    DrawCubeWires(cubePosition, cubeSize.x, cubeSize.y, cubeSize.z, MAROON);
+
+                    DrawCubeWires(cubePosition, cubeSize.x + 0.2f, cubeSize.y + 0.2f, cubeSize.z + 0.2f, GREEN);
+                }
+                else
+                {
+                    DrawCube(cubePosition, cubeSize.x, cubeSize.y, cubeSize.z, GRAY);
+                    DrawCubeWires(cubePosition, cubeSize.x, cubeSize.y, cubeSize.z, DARKGRAY);
+                }
+
+                DrawRay(ray, MAROON);
+                //DrawGrid(10, 1.0f);
+}
+
 // Generate cubemap texture from HDR texture
 static TextureCubemap GenTextureCubemap(Shader shader, Texture2D panorama, int size, int format) 
 {
